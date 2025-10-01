@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Murugo Styling Examples</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
+    <link rel="stylesheet" href="resources/css/simple-styles.css">
+    <style>
+        /* Additional demo styles */
+        .demo-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            background: white;
+        }
+        
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .demo-item {
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background: #f9fafb;
+        }
+        
+        .demo-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-heading text-center mb-8">Murugo Styling Examples</h1>
+        
+        <!-- Buttons Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Buttons</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Primary Buttons</div>
+                    <div class="space-y-4">
+                        <button class="btn btn-primary btn-sm">Small</button>
+                        <button class="btn btn-primary btn-md">Medium</button>
+                        <button class="btn btn-primary btn-lg">Large</button>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Button Variants</div>
+                    <div class="space-y-4">
+                        <button class="btn btn-primary">Primary</button>
+                        <button class="btn btn-secondary">Secondary</button>
+                        <button class="btn btn-outline">Outline</button>
+                        <button class="btn btn-ghost">Ghost</button>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Status Buttons</div>
+                    <div class="space-y-4">
+                        <button class="btn btn-success">Success</button>
+                        <button class="btn btn-warning">Warning</button>
+                        <button class="btn btn-danger">Danger</button>
+                        <button class="btn" disabled>Disabled</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cards Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Cards</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Default Card</div>
+                    <div class="card">
+                        <div class="p-6">
+                            <h3 class="font-semibold mb-2">Card Title</h3>
+                            <p class="text-gray-600 mb-4">This is a default card with some content to demonstrate the styling.</p>
+                            <button class="btn btn-primary btn-sm">Action</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Elevated Card</div>
+                    <div class="card card-elevated">
+                        <div class="p-6">
+                            <h3 class="font-semibold mb-2">Elevated Card</h3>
+                            <p class="text-gray-600 mb-4">This card has more shadow and elevation for emphasis.</p>
+                            <button class="btn btn-outline btn-sm">Action</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Subtle Card</div>
+                    <div class="card card-subtle">
+                        <div class="p-6">
+                            <h3 class="font-semibold mb-2">Subtle Card</h3>
+                            <p class="text-gray-600 mb-4">This card has a subtle background and minimal styling.</p>
+                            <button class="btn btn-ghost btn-sm">Action</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Elements Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Form Elements</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Basic Inputs</div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" placeholder="Enter your email">
+                        </div>
+                        <div>
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" placeholder="Enter your password">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Error State</div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input error" placeholder="Enter username">
+                            <p class="form-error">Username is required</p>
+                        </div>
+                        <div>
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" placeholder="Enter phone number">
+                            <p class="form-help">Include country code</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Form with Button</div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" placeholder="Enter your full name">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-md">Submit Form</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Badges Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Badges</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Status Badges</div>
+                    <div class="space-y-4">
+                        <span class="badge badge-primary">Primary</span>
+                        <span class="badge badge-success">Success</span>
+                        <span class="badge badge-warning">Warning</span>
+                        <span class="badge badge-error">Error</span>
+                        <span class="badge badge-gray">Gray</span>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Badge with Text</div>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <span class="badge badge-success">Active</span>
+                            <span class="font-medium">User Account</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="badge badge-warning">Pending</span>
+                            <span class="font-medium">Payment</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="badge badge-error">Failed</span>
+                            <span class="font-medium">Upload</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Typography Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Typography</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Headings</div>
+                    <div class="space-y-4">
+                        <h1 class="text-heading">Main Heading</h1>
+                        <h2 class="text-subheading">Subheading</h2>
+                        <p class="text-body">Body text with proper line height and color for readability.</p>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Font Weights</div>
+                    <div class="space-y-4">
+                        <p class="font-semibold">Semibold text</p>
+                        <p class="font-bold">Bold text</p>
+                        <p class="text-gray-600">Gray text for secondary information</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Color Palette Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Color Palette</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Primary Colors</div>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-primary-500 rounded mr-3"></div>
+                            <span class="text-sm text-gray-600">Primary 500</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-primary-600 rounded mr-3"></div>
+                            <span class="text-sm text-gray-600">Primary 600</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-primary-700 rounded mr-3"></div>
+                            <span class="text-sm text-gray-600">Primary 700</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Status Colors</div>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-success rounded mr-3"></div>
+                            <span class="text-sm text-gray-600">Success</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-warning rounded mr-3"></div>
+                            <span class="text-sm text-gray-600">Warning</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-error rounded mr-3"></div>
+                            <span class="text-sm text-gray-600">Error</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Layout Examples Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Layout Examples</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Hero Section</div>
+                    <div class="bg-primary-600 text-white p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-2">Welcome to Murugo</h3>
+                        <p class="mb-4">Find your perfect home in Rwanda</p>
+                        <button class="btn btn-secondary btn-sm">Get Started</button>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Status Row</div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <span class="badge badge-success">Active</span>
+                            <span class="font-medium">Property Listing</span>
+                        </div>
+                        <button class="btn btn-outline btn-sm">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Grid Layout</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="p-2 bg-primary-100 rounded text-center text-sm">Item 1</div>
+                        <div class="p-2 bg-primary-100 rounded text-center text-sm">Item 2</div>
+                        <div class="p-2 bg-primary-100 rounded text-center text-sm">Item 3</div>
+                        <div class="p-2 bg-primary-100 rounded text-center text-sm">Item 4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Animation Examples Section -->
+        <div class="demo-section">
+            <h2 class="demo-title">Animations</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Hover Effects</div>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white border rounded hover-lift">Hover to lift</div>
+                        <div class="p-4 bg-white border rounded hover-scale">Hover to scale</div>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <div class="demo-label">Animation Classes</div>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white border rounded animate-fade-in">Fade in</div>
+                        <div class="p-4 bg-white border rounded animate-slide-up">Slide up</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Usage Instructions -->
+        <div class="demo-section">
+            <h2 class="demo-title">How to Use</h2>
+            <div class="space-y-4">
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 class="font-semibold text-blue-900 mb-2">1. Include the CSS</h4>
+                    <p class="text-blue-800">Add the simple-styles.css file to your project and include it in your HTML head section.</p>
+                </div>
+                
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h4 class="font-semibold text-green-900 mb-2">2. Use the Classes</h4>
+                    <p class="text-green-800">Apply the CSS classes directly to your HTML elements. No JavaScript or complex components needed.</p>
+                </div>
+                
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <h4 class="font-semibold text-yellow-900 mb-2">3. Customize as Needed</h4>
+                    <p class="text-yellow-800">Modify the CSS custom properties in the :root section to change colors, spacing, and other design tokens.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
