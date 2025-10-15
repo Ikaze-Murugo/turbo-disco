@@ -267,15 +267,47 @@
                     </div>
 
                     <div class="space-y-3">
-                        <button class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                            Send Message
-                        </button>
-                        <button class="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                            Call Now
-                        </button>
-                        <button class="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                            Schedule Visit
-                        </button>
+                        @auth
+                            @if(auth()->user()->isRenter())
+                                <a href="{{ route('messages.create', $property) }}" class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium inline-block text-center">
+                                    Send Message
+                                </a>
+                            @else
+                                <button disabled class="w-full bg-gray-400 text-white py-3 px-4 rounded-lg cursor-not-allowed font-medium">
+                                    Send Message (Renters Only)
+                                </button>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium inline-block text-center">
+                                Login to Send Message
+                            </a>
+                        @endauth
+                        
+                        @if($property->landlord->phone ?? false)
+                            <a href="tel:{{ $property->landlord->phone }}" class="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium inline-block text-center">
+                                Call Now
+                            </a>
+                        @else
+                            <button disabled class="w-full border border-gray-300 text-gray-400 py-3 px-4 rounded-lg cursor-not-allowed font-medium">
+                                Call Now (No Phone)
+                            </button>
+                        @endif
+                        
+                        @auth
+                            @if(auth()->user()->isRenter())
+                                <button onclick="alert('Schedule visit feature coming soon!')" class="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                                    Schedule Visit
+                                </button>
+                            @else
+                                <button disabled class="w-full border border-gray-300 text-gray-400 py-3 px-4 rounded-lg cursor-not-allowed font-medium">
+                                    Schedule Visit (Renters Only)
+                                </button>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium inline-block text-center">
+                                Login to Schedule Visit
+                            </a>
+                        @endauth
                     </div>
 
                     <div class="mt-4 pt-4 border-t border-gray-200">

@@ -212,9 +212,21 @@
                     <div class="bg-white p-6 rounded-lg shadow">
                         <h2 class="text-xl font-semibold mb-4">Contact Landlord</h2>
                         <p class="text-gray-600 mb-4">{{ $property->landlord->name }}</p>
-                        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
-                            Contact Now
-                        </button>
+                        @auth
+                            @if(auth()->user()->isRenter())
+                                <a href="{{ route('messages.create', $property) }}" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 inline-block text-center">
+                                    Contact Now
+                                </a>
+                            @else
+                                <button disabled class="w-full bg-gray-400 text-white py-2 px-4 rounded-md cursor-not-allowed">
+                                    Contact Now (Renters Only)
+                                </button>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 inline-block text-center">
+                                Login to Contact
+                            </a>
+                        @endauth
                     </div>
                     
                     <!-- Property Map -->
