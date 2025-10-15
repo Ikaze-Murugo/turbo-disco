@@ -152,8 +152,16 @@ class MessageReportController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             
+            // Log the actual error for debugging
+            \Log::error('Message report submission failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => Auth::id(),
+                'message_id' => $message->id
+            ]);
+            
             return redirect()->back()
-                ->with('error', 'Failed to submit message report. Please try again.')
+                ->with('error', 'Failed to submit message report. Please try again. Error: ' . $e->getMessage())
                 ->withInput();
         }
     }
