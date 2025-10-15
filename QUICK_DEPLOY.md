@@ -11,17 +11,17 @@ cd /var/www/murugo-app
 
 # 3. Pull changes & run migrations
 git pull origin main && \
-docker-compose exec -T app php artisan migrate --force
+docker compose exec -T murugo php artisan migrate --force
 
 # 4. Clear caches & optimize
-docker-compose exec -T app php artisan config:clear && \
-docker-compose exec -T app php artisan cache:clear && \
-docker-compose exec -T app php artisan view:clear && \
-docker-compose exec -T app php artisan config:cache && \
-docker-compose exec -T app php artisan route:cache
+docker compose exec -T murugo php artisan config:clear && \
+docker compose exec -T murugo php artisan cache:clear && \
+docker compose exec -T murugo php artisan view:clear && \
+docker compose exec -T murugo php artisan config:cache && \
+docker compose exec -T murugo php artisan route:cache
 
 # 5. Restart
-docker-compose restart app
+docker compose restart murugo
 ```
 
 ---
@@ -40,15 +40,15 @@ cp database/database.sqlite database/database.sqlite.backup-$(date +%Y%m%d-%H%M%
 
 # Step 4: Pull & Update
 git pull origin main && \
-docker-compose exec -T app php artisan migrate --force && \
-docker-compose exec -T app php artisan config:clear && \
-docker-compose exec -T app php artisan cache:clear && \
-docker-compose exec -T app php artisan view:clear && \
-docker-compose exec -T app php artisan config:cache && \
-docker-compose restart app
+docker compose exec -T murugo php artisan migrate --force && \
+docker compose exec -T murugo php artisan config:clear && \
+docker compose exec -T murugo php artisan cache:clear && \
+docker compose exec -T murugo php artisan view:clear && \
+docker compose exec -T murugo php artisan config:cache && \
+docker compose restart murugo
 
 # Step 5: Verify
-docker-compose ps && docker-compose logs app --tail=20
+docker compose ps && docker compose logs murugo --tail=20
 ```
 
 ---
@@ -57,10 +57,10 @@ docker-compose ps && docker-compose logs app --tail=20
 
 ```bash
 # Rebuild and restart
-docker-compose build --no-cache app && \
-docker-compose up -d && \
-docker-compose exec -T app php artisan migrate --force && \
-docker-compose exec -T app php artisan config:cache
+docker compose build --no-cache murugo && \
+docker compose up -d murugo && \
+docker compose exec -T murugo php artisan migrate --force && \
+docker compose exec -T murugo php artisan config:cache
 ```
 
 ---
@@ -71,10 +71,10 @@ docker-compose exec -T app php artisan config:cache
 cd /var/www/murugo-app && \
 cp database/database.sqlite database/database.sqlite.backup-$(date +%Y%m%d-%H%M%S) && \
 git pull origin main && \
-docker-compose exec -T app php artisan migrate --force && \
-docker-compose exec -T app php artisan optimize:clear && \
-docker-compose exec -T app php artisan optimize && \
-docker-compose restart app && \
+docker compose exec -T murugo php artisan migrate --force && \
+docker compose exec -T murugo php artisan optimize:clear && \
+docker compose exec -T murugo php artisan optimize && \
+docker compose restart murugo && \
 echo "✅ Deployment complete!"
 ```
 
@@ -84,28 +84,28 @@ echo "✅ Deployment complete!"
 
 ### Container not running?
 ```bash
-docker-compose ps
-docker-compose logs app --tail=50
+docker compose ps
+docker compose logs murugo --tail=50
 ```
 
 ### Migration failed?
 ```bash
-docker-compose exec app php artisan migrate:status
-docker-compose exec app php artisan migrate:rollback --step=1
+docker compose exec murugo php artisan migrate:status
+docker compose exec murugo php artisan migrate:rollback --step=1
 ```
 
 ### Permission errors?
 ```bash
-docker-compose exec app chmod -R 775 storage bootstrap/cache
-docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
+docker compose exec murugo chmod -R 775 storage bootstrap/cache
+docker compose exec murugo chown -R www-data:www-data storage bootstrap/cache
 ```
 
 ### Rollback deployment?
 ```bash
 git reset --hard HEAD~1
-docker-compose exec app php artisan migrate:rollback --step=1
+docker compose exec murugo php artisan migrate:rollback --step=1
 cp database/database.sqlite.backup-[latest] database/database.sqlite
-docker-compose restart app
+docker compose restart murugo
 ```
 
 ---
@@ -117,10 +117,10 @@ docker-compose restart app
 curl -I http://your-domain.com
 
 # Check containers
-docker-compose ps
+docker compose ps
 
 # Check logs
-docker-compose logs -f app --tail=30
+docker compose logs -f murugo --tail=30
 ```
 
 ---

@@ -45,7 +45,7 @@ Before pulling changes, always backup your database:
 cp database/database.sqlite database/database.sqlite.backup-$(date +%Y%m%d-%H%M%S)
 
 # Or for PostgreSQL
-# docker-compose exec db pg_dump -U your_db_user your_db_name > backup-$(date +%Y%m%d-%H%M%S).sql
+# docker compose exec db pg_dump -U your_db_user your_db_name > backup-$(date +%Y%m%d-%H%M%S).sql
 ```
 
 ---
@@ -70,18 +70,18 @@ git pull origin main
 **Option A: Update dependencies INSIDE the running container**
 ```bash
 # Update PHP dependencies
-docker-compose exec app composer install --optimize-autoloader --no-dev
+docker compose exec murugo composer install --optimize-autoloader --no-dev
 
 # Update Node dependencies
-docker-compose exec app npm install --production
+docker compose exec murugo npm install --production
 
 # Build assets
-docker-compose exec app npm run build
+docker compose exec murugo npm run build
 ```
 
 **Option B: Rebuild the Docker image (if Dockerfile changed)**
 ```bash
-docker-compose build --no-cache app
+docker compose build --no-cache murugo
 ```
 
 ---
@@ -90,10 +90,10 @@ docker-compose build --no-cache app
 
 ```bash
 # Run migrations
-docker-compose exec app php artisan migrate --force
+docker compose exec murugo php artisan migrate --force
 
 # If you need to seed data (be careful in production!)
-# docker-compose exec app php artisan db:seed --force
+# docker compose exec murugo php artisan db:seed --force
 ```
 
 ---
@@ -102,15 +102,15 @@ docker-compose exec app php artisan migrate --force
 
 ```bash
 # Clear application caches
-docker-compose exec app php artisan config:clear
-docker-compose exec app php artisan cache:clear
-docker-compose exec app php artisan view:clear
-docker-compose exec app php artisan route:clear
+docker compose exec murugo php artisan config:clear
+docker compose exec murugo php artisan cache:clear
+docker compose exec murugo php artisan view:clear
+docker compose exec murugo php artisan route:clear
 
 # Optimize for production
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan route:cache
-docker-compose exec app php artisan view:cache
+docker compose exec murugo php artisan config:cache
+docker compose exec murugo php artisan route:cache
+docker compose exec murugo php artisan view:cache
 ```
 
 ---
@@ -119,8 +119,8 @@ docker-compose exec app php artisan view:cache
 
 ```bash
 # Fix permissions for Laravel
-docker-compose exec app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-docker-compose exec app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+docker compose exec murugo chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+docker compose exec murugo chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 ```
 
 ---
@@ -129,25 +129,25 @@ docker-compose exec app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 **Option A: Graceful restart (recommended)**
 ```bash
-docker-compose restart app
+docker compose restart murugo
 ```
 
 **Option B: Full restart (if needed)**
 ```bash
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d murugo
 ```
 
 **Option C: Restart specific services only**
 ```bash
 # Restart PHP-FPM
-docker-compose restart app
+docker compose restart murugo
 
 # Restart Nginx
-docker-compose restart nginx
+docker compose restart nginx
 
 # Restart Queue workers (if you have them)
-docker-compose restart queue
+docker compose restart queue
 ```
 
 ---
@@ -156,13 +156,13 @@ docker-compose restart queue
 
 ```bash
 # Check if containers are running
-docker-compose ps
+docker compose ps
 
 # Check application logs
-docker-compose logs -f app --tail=50
+docker compose logs -f app --tail=50
 
 # Check nginx logs
-docker-compose logs -f nginx --tail=50
+docker compose logs -f nginx --tail=50
 
 # Test the application
 curl -I http://your-domain.com
@@ -177,42 +177,42 @@ curl -I http://your-domain.com
 
 ```bash
 # Check migration status
-docker-compose exec app php artisan migrate:status
+docker compose exec murugo php artisan migrate:status
 
 # Rollback last migration
-docker-compose exec app php artisan migrate:rollback --step=1
+docker compose exec murugo php artisan migrate:rollback --step=1
 
 # Fresh migration (WARNING: This will delete all data!)
-# docker-compose exec app php artisan migrate:fresh --force
+# docker compose exec murugo php artisan migrate:fresh --force
 ```
 
 ### **Issue: Permission Denied Errors**
 
 ```bash
 # Fix storage permissions
-docker-compose exec app chmod -R 775 storage bootstrap/cache
-docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
+docker compose exec murugo chmod -R 775 storage bootstrap/cache
+docker compose exec murugo chown -R www-data:www-data storage bootstrap/cache
 ```
 
 ### **Issue: Composer Memory Limit**
 
 ```bash
 # Run composer with more memory
-docker-compose exec app php -d memory_limit=-1 /usr/bin/composer install --no-dev --optimize-autoloader
+docker compose exec murugo php -d memory_limit=-1 /usr/bin/composer install --no-dev --optimize-autoloader
 ```
 
 ### **Issue: Container Won't Start**
 
 ```bash
 # Check container logs
-docker-compose logs app
+docker compose logs murugo
 
 # Check for syntax errors in Docker files
-docker-compose config
+docker compose config
 
 # Rebuild from scratch
-docker-compose down -v
-docker-compose up -d --build
+docker compose down -v
+docker compose up -d --build
 ```
 
 ---
@@ -240,27 +240,27 @@ git pull origin main
 
 # Run migrations
 echo "🗄️  Running migrations..."
-docker-compose exec -T app php artisan migrate --force
+docker compose exec -T app php artisan migrate --force
 
 # Clear caches
 echo "🧹 Clearing caches..."
-docker-compose exec -T app php artisan config:clear
-docker-compose exec -T app php artisan cache:clear
-docker-compose exec -T app php artisan view:clear
+docker compose exec -T app php artisan config:clear
+docker compose exec -T app php artisan cache:clear
+docker compose exec -T app php artisan view:clear
 
 # Optimize
 echo "⚡ Optimizing..."
-docker-compose exec -T app php artisan config:cache
-docker-compose exec -T app php artisan route:cache
-docker-compose exec -T app php artisan view:cache
+docker compose exec -T app php artisan config:cache
+docker compose exec -T app php artisan route:cache
+docker compose exec -T app php artisan view:cache
 
 # Restart
 echo "🔄 Restarting services..."
-docker-compose restart app
+docker compose restart murugo
 
 # Verify
 echo "✅ Checking status..."
-docker-compose ps
+docker compose ps
 
 echo "🎉 Deployment complete!"
 ```
@@ -291,13 +291,13 @@ Run it:
 
 3. **Keep Docker images updated**
    ```bash
-   docker-compose pull
-   docker-compose up -d
+   docker compose pull
+   docker compose up -d murugo
    ```
 
 4. **Monitor logs regularly**
    ```bash
-   docker-compose logs -f --tail=100
+   docker compose logs -f --tail=100
    ```
 
 ---
@@ -308,31 +308,31 @@ Run it:
 
 ```bash
 # Start services
-docker-compose up -d
+docker compose up -d murugo
 
 # Stop services
-docker-compose down
+docker compose down
 
 # Restart services
-docker-compose restart
+docker compose restart
 
 # View logs
-docker-compose logs -f app
+docker compose logs -f app
 
 # Execute command in container
-docker-compose exec app php artisan [command]
+docker compose exec murugo php artisan [command]
 
 # Build images
-docker-compose build
+docker compose build
 
 # Pull images
-docker-compose pull
+docker compose pull
 
 # List containers
-docker-compose ps
+docker compose ps
 
 # Remove volumes (CAUTION: Deletes data)
-docker-compose down -v
+docker compose down -v
 ```
 
 ---
@@ -350,14 +350,14 @@ df -h
 docker system df
 
 # Container resource usage
-docker-compose top
+docker compose top
 ```
 
 ### **Database Health**
 
 ```bash
 # For SQLite
-docker-compose exec app php artisan tinker
+docker compose exec murugo php artisan tinker
 >>> DB::connection()->getPdo();
 
 # Check database size
@@ -375,17 +375,17 @@ If deployment fails:
 git reset --hard HEAD~1
 
 # 2. Rollback migrations
-docker-compose exec app php artisan migrate:rollback --step=1
+docker compose exec murugo php artisan migrate:rollback --step=1
 
 # 3. Restore database backup
 cp database/database.sqlite.backup-[timestamp] database/database.sqlite
 
 # 4. Restart services
-docker-compose restart app
+docker compose restart murugo
 
 # 5. Clear caches
-docker-compose exec app php artisan config:clear
-docker-compose exec app php artisan cache:clear
+docker compose exec murugo php artisan config:clear
+docker compose exec murugo php artisan cache:clear
 ```
 
 ---
@@ -412,7 +412,7 @@ docker-compose exec app php artisan cache:clear
 ## 🆘 Emergency Contacts
 
 - **Application Issues**: Check `/storage/logs/laravel.log`
-- **Docker Issues**: Check `docker-compose logs`
+- **Docker Issues**: Check `docker compose logs`
 - **Database Issues**: Restore from backup immediately
 
 ---
