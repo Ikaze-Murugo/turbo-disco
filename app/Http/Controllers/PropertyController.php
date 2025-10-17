@@ -55,7 +55,7 @@ class PropertyController extends Controller
             $nearbyAmenities = $locationService->getCachedPropertyAmenities($property);
         }
         
-        return view('properties.show-enhanced', compact('property', 'nearbyAmenities'));
+        return view('properties.show', compact('property', 'nearbyAmenities'));
     }
 
     public function create()
@@ -68,21 +68,18 @@ class PropertyController extends Controller
         return view('properties.create');
     }
 
-    public function createEnhanced()
-    {
-        // Only landlords can create properties
-        if (!Auth::user()->isLandlord()) {
-            abort(403);
-        }
-
-        return view('properties.create-enhanced');
-    }
-
     public function store(Request $request)
     {
         if (!Auth::user()->isLandlord()) {
             abort(403);
         }
+
+        // Debug: Log all request data
+        \Log::info('Property store request received', [
+            'has_images' => $request->hasFile('images'),
+            'files' => $request->allFiles(),
+            'all_inputs' => $request->except(['password', '_token'])
+        ]);
 
         try {
             $validated = $request->validate([
@@ -111,7 +108,7 @@ class PropertyController extends Controller
                 'has_cable_tv' => 'boolean',
                 'pets_allowed' => 'boolean',
                 'smoking_allowed' => 'boolean',
-                'images.*' => 'nullable',
+                'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
                 'blueprints.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
                 'image_types.*' => 'nullable|string|in:exterior,interior,kitchen,bathroom,bedroom,living_room,garden,parking',
             ]);
@@ -160,10 +157,44 @@ class PropertyController extends Controller
                 $validated[$field] = $request->has($field) ? (bool) $request->input($field) : false;
             }
 
-            $property = Property::create($validated);
+            // Only include the fields we want to save (avoid array to string conversion issues)
+            $propertyData = [
+                'landlord_id' => $validated['landlord_id'],
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'price' => $validated['price'],
+                'location' => $validated['location'],
+                'address' => $validated['address'],
+                'neighborhood' => $validated['neighborhood'] ?? null,
+                'latitude' => $validated['latitude'] ?? null,
+                'longitude' => $validated['longitude'] ?? null,
+                'type' => $validated['type'],
+                'bedrooms' => $validated['bedrooms'],
+                'bathrooms' => $validated['bathrooms'],
+                'area' => $validated['area'] ?? null,
+                'furnishing_status' => $validated['furnishing_status'] ?? null,
+                'parking_spaces' => $validated['parking_spaces'] ?? 0,
+                'status' => $validated['status'],
+                'is_available' => $validated['is_available'],
+            ];
+            
+            // Add checkbox fields
+            foreach ($checkboxFields as $field) {
+                $propertyData[$field] = $validated[$field];
+            }
+
+            $property = Property::create($propertyData);
 
             // Handle image uploads
+            \Log::info('Checking for image uploads', [
+                'hasFile' => $request->hasFile('images'),
+                'allFiles' => $request->allFiles(),
+                'property_id' => $property->id
+            ]);
+            
             if ($request->hasFile('images')) {
+                \Log::info('Images found, processing...', ['count' => count($request->file('images'))]);
+                
                 foreach ($request->file('images') as $index => $file) {
                     if ($file && $file->isValid() && $file->getSize() > 0) {
                         try {
@@ -172,40 +203,58 @@ class PropertyController extends Controller
                             
                             $imageType = $request->input("image_types.{$index}", 'interior');
 
-                            Image::create([
+                            $image = Image::create([
                                 'property_id' => $property->id,
                                 'filename' => $filename,
                                 'path' => $path,
-                                'image_path' => $path,
                                 'image_type' => $imageType,
                                 'is_primary' => $index === 0,
                                 'image_order' => $index,
                                 'sort_order' => $index,
                             ]);
+                            
+                            \Log::info('Image saved successfully', ['image_id' => $image->id, 'path' => $path]);
                         } catch (\Exception $e) {
-                            \Log::error('Image upload failed: ' . $e->getMessage());
+                            \Log::error('Image upload failed: ' . $e->getMessage(), [
+                                'property_id' => $property->id,
+                                'filename' => $filename ?? 'unknown',
+                                'error' => $e->getMessage(),
+                                'trace' => $e->getTraceAsString()
+                            ]);
                             // Continue with other images even if one fails
                         }
+                    } else {
+                        \Log::warning('Invalid image file', ['index' => $index, 'valid' => $file ? $file->isValid() : false]);
                     }
                 }
+            } else {
+                \Log::warning('No images found in request');
             }
 
             // Handle blueprint uploads
             if ($request->hasFile('blueprints')) {
                 foreach ($request->file('blueprints') as $index => $file) {
-                    $filename = time() . '_blueprint_' . $index . '.' . $file->getClientOriginalExtension();
-                    $path = $file->storeAs('properties/' . $property->id, $filename, 'public');
+                    if ($file && $file->isValid() && $file->getSize() > 0) {
+                        try {
+                            $filename = time() . '_blueprint_' . $index . '.' . $file->getClientOriginalExtension();
+                            $path = $file->storeAs('properties/' . $property->id, $filename, 'public');
 
-                    Image::create([
-                        'property_id' => $property->id,
-                        'filename' => $filename,
-                        'path' => $path,
-                        'image_path' => $path,
-                        'image_type' => 'blueprint',
-                        'is_primary' => false,
-                        'image_order' => 0,
-                        'sort_order' => 0,
-                    ]);
+                            Image::create([
+                                'property_id' => $property->id,
+                                'filename' => $filename,
+                                'path' => $path,
+                                'image_type' => 'blueprint',
+                                'is_primary' => false,
+                                'image_order' => 0,
+                                'sort_order' => 0,
+                            ]);
+                        } catch (\Exception $e) {
+                            \Log::error('Blueprint upload failed: ' . $e->getMessage(), [
+                                'property_id' => $property->id,
+                                'filename' => $filename ?? 'unknown',
+                            ]);
+                        }
+                    }
                 }
             }
 
@@ -247,7 +296,7 @@ class PropertyController extends Controller
             'location' => 'required|string|max:255',
             'bedrooms' => 'required|integer|min:1',
             'bathrooms' => 'required|integer|min:1',
-            'type' => 'required|string|in:house,apartment,studio,condo,villa,townhouse',
+            'type' => 'required|string|in:house,apartment,studio,condo,villa,townhouse,commercial',
             'area' => 'nullable|numeric|min:0',
             'parking_spaces' => 'nullable|integer|min:0',
             'furnishing_status' => 'nullable|string|in:furnished,semi_furnished,unfurnished',
@@ -282,10 +331,30 @@ class PropertyController extends Controller
         $updateNotes = $validated['update_notes'] ?? null;
         unset($validated['update_notes']);
 
+        // Only include fields that should be updated (avoid array fields)
+        $updateData = [
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'location' => $validated['location'],
+            'type' => $validated['type'],
+            'bedrooms' => $validated['bedrooms'],
+            'bathrooms' => $validated['bathrooms'],
+            'area' => $validated['area'] ?? null,
+            'furnishing_status' => $validated['furnishing_status'] ?? null,
+            'parking_spaces' => $validated['parking_spaces'] ?? 0,
+            'is_available' => $validated['is_available'] ?? $property->is_available,
+        ];
+        
+        // Add checkbox fields
+        foreach ($checkboxFields as $field) {
+            $updateData[$field] = $validated[$field];
+        }
+
         // Check if this is an admin updating directly
         if (Auth::user()->isAdmin()) {
-            $validated['status'] = $request->input('status', $property->status);
-            $property->update($validated);
+            $updateData['status'] = $request->input('status', $property->status);
+            $property->update($updateData);
             
             return redirect()->route('properties.index')
                             ->with('success', 'Property updated successfully!');
@@ -294,7 +363,7 @@ class PropertyController extends Controller
         // For landlords: check if property is approved and needs versioning
         if ($property->status === 'active' && $property->version_status === 'original') {
             // Property is approved - create a pending version
-            $changes = array_diff_assoc($validated, $property->toArray());
+            $changes = array_diff_assoc($updateData, $property->toArray());
             
             if (!empty($changes)) {
                 $pendingVersion = $property->createPendingVersion($changes, $updateNotes);
@@ -307,7 +376,7 @@ class PropertyController extends Controller
             }
         } else {
             // Property is not approved yet - update directly
-            $property->update($validated);
+            $property->update($updateData);
             
             return redirect()->route('properties.index')
                             ->with('success', 'Property updated successfully!');

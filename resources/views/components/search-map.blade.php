@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="p-3 max-w-xs">
                         <div class="mb-2">
                             @if($property->images->where('is_primary', true)->first())
-                                <img src="{{ Storage::url($property->images->where('is_primary', true)->first()->image_path) }}" 
+                                <img src="{{ Storage::url($property->images->where('is_primary', true)->first()->path) }}" 
                                      alt="{{ $property->title }}" 
                                      class="w-full h-24 object-cover rounded">
                             @endif

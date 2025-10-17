@@ -420,8 +420,13 @@ class Property extends Model
         $newVersion->update_requested_at = now();
         $newVersion->update_notes = $notes;
         $newVersion->update_requested_by = $requestedBy ?? auth()->id();
-        $newVersion->pending_changes = $changes;
         $newVersion->status = 'pending';
+        
+        // Set array fields to null initially (will be populated from pending_changes if needed)
+        $newVersion->amenities = null;
+        $newVersion->features = null;
+        $newVersion->pending_changes = is_array($changes) ? json_encode($changes) : null;
+        
         $newVersion->save();
 
         return $newVersion;

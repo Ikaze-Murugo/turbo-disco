@@ -46,14 +46,14 @@
                             <x-input-error :messages="$errors->get('price')" class="mt-2" />
                         </div>
 
-                        <!-- Location -->
+                        <!-- Address -->
                         <div class="mb-4">
-                            <x-input-label for="location" :value="__('Location')" />
-                            <x-text-input id="location" class="block mt-1 w-full" type="text" name="location" 
-                                         :value="old('location')" required 
-                                         placeholder="e.g., Remera, Gasabo District" />
-                            <x-input-error :messages="$errors->get('location')" class="mt-2" />
-                            <p class="text-sm text-gray-500 mt-1">Include sector, district for better visibility</p>
+                            <x-input-label for="address" :value="__('Full Address')" />
+                            <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" 
+                                         :value="old('address')" required 
+                                         placeholder="e.g., KG 123 St, Remera, Gasabo District, Kigali" />
+                            <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                            <p class="text-sm text-gray-500 mt-1">Enter the complete address for automatic location detection</p>
                         </div>
 
                         <!-- Bedrooms and Bathrooms -->
@@ -111,6 +111,7 @@
                                 <option value="condo" {{ old('type') == 'condo' ? 'selected' : '' }}>Condo</option>
                                 <option value="villa" {{ old('type') == 'villa' ? 'selected' : '' }}>Villa</option>
                                 <option value="townhouse" {{ old('type') == 'townhouse' ? 'selected' : '' }}>Townhouse</option>
+                                <option value="commercial" {{ old('type') == 'commercial' ? 'selected' : '' }}>Commercial</option>
                             </select>
                             <x-input-error :messages="$errors->get('type')" class="mt-2" />
                         </div>

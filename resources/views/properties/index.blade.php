@@ -111,7 +111,7 @@
                     @endif
                     
                     @if(auth()->check() && auth()->user()->isLandlord())
-                        <a href="{{ route('properties.create.enhanced') }}" class="btn btn-primary">
+                        <a href="{{ route('properties.create') }}" class="btn btn-primary">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -138,7 +138,7 @@
                         </p>
                         
                         @if(auth()->check() && auth()->user()->isLandlord())
-                            <a href="{{ route('properties.create.enhanced') }}" class="btn btn-primary">
+                            <a href="{{ route('properties.create') }}" class="btn btn-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>

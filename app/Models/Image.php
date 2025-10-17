@@ -14,7 +14,6 @@ class Image extends Model
         'alt_text',
         'is_primary',
         'sort_order',
-        'image_path',
         'image_type',
         'image_order',
     ];
@@ -69,10 +68,6 @@ class Image extends Model
      */
     public function getUrlAttribute()
     {
-        if ($this->image_path) {
-            return asset('storage/' . $this->image_path);
-        }
-        
         if ($this->path) {
             return asset('storage/' . $this->path);
         }

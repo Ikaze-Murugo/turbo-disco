@@ -90,8 +90,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('properties', PropertyController::class)
         ->middleware('rate_limit.property_management');
     
-    // Enhanced property creation route
-    Route::get('/properties/create/enhanced', [PropertyController::class, 'createEnhanced'])->name('properties.create.enhanced');
     Route::get('/search', [SearchController::class, 'index'])->name('properties.search');
     Route::get('/search-map', [SearchController::class, 'searchMap'])->name('properties.search-map');
     
