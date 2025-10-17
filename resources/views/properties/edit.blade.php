@@ -53,7 +53,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('properties.update', $property) }}">
+                    <form method="POST" action="{{ route('properties.update', $property) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PATCH')
 

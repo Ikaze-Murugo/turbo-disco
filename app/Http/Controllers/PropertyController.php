@@ -351,6 +351,36 @@ class PropertyController extends Controller
             $updateData[$field] = $validated[$field];
         }
 
+        // Handle new image uploads BEFORE updating property
+        if ($request->hasFile('new_images')) {
+            $request->validate([
+                'new_images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            ]);
+
+            foreach ($request->file('new_images') as $index => $file) {
+                if ($file && $file->isValid() && $file->getSize() > 0) {
+                    try {
+                        $filename = time() . '_' . $index . '.' . $file->getClientOriginalExtension();
+                        $path = $file->storeAs('properties/' . $property->id, $filename, 'public');
+
+                        $image = Image::create([
+                            'property_id' => $property->id,
+                            'filename' => $filename,
+                            'path' => $path,
+                            'image_type' => 'interior',
+                            'is_primary' => $property->images()->count() === 0 && $index === 0,
+                            'image_order' => $property->images()->count() + $index,
+                            'sort_order' => $property->images()->count() + $index,
+                        ]);
+                        
+                        \Log::info('Image added to property during update', ['image_id' => $image->id, 'property_id' => $property->id]);
+                    } catch (\Exception $e) {
+                        \Log::error('Failed to upload image during update: ' . $e->getMessage());
+                    }
+                }
+            }
+        }
+
         // Check if this is an admin updating directly
         if (Auth::user()->isAdmin()) {
             $updateData['status'] = $request->input('status', $property->status);
@@ -380,26 +410,6 @@ class PropertyController extends Controller
             
             return redirect()->route('properties.index')
                             ->with('success', 'Property updated successfully!');
-        }
-
-        // Handle new image uploads
-        if ($request->hasFile('new_images')) {
-            $request->validate([
-                'new_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
-
-            foreach ($request->file('new_images') as $index => $file) {
-                $filename = time() . '_' . $index . '.' . $file->getClientOriginalExtension();
-                $path = $file->storeAs('properties/' . $property->id, $filename, 'public');
-
-                Image::create([
-                    'property_id' => $property->id,
-                    'filename' => $filename,
-                    'path' => $path,
-                    'is_primary' => false, // New images are not primary by default
-                    'sort_order' => $property->images()->count() + $index,
-                ]);
-            }
         }
     }
 
