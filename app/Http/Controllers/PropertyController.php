@@ -114,13 +114,13 @@ class PropertyController extends Controller
             ]);
 
             // Geocode the address if coordinates are not provided
-            if (!$validated['latitude'] || !$validated['longitude']) {
+            if (empty($validated['latitude']) || empty($validated['longitude'])) {
                 try {
                     $geocodingService = new GeocodingService();
                     $coordinates = $geocodingService->geocodeWithFallback(
                         $validated['address'],
-                        $validated['latitude'],
-                        $validated['longitude']
+                        $validated['latitude'] ?? null,
+                        $validated['longitude'] ?? null
                     );
                     
                     if ($coordinates) {
