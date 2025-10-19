@@ -21,9 +21,11 @@
                     </svg>
                 </button>
                 <a href="{{ route('home') }}" 
-                   class="text-xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+                   class="flex items-center"
                    aria-label="Murugo - Go to homepage">
-                    Murugo
+                    <img src="{{ asset('images/murugo-logo.png') }}" 
+                         alt="Murugo - Find Your Perfect Home" 
+                         class="h-24 w-auto object-contain">
                 </a>
             </div>
 
@@ -84,8 +86,10 @@
                 <div class="flex items-center space-x-8">
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
-                        <a href="{{ route('home') }}" class="text-xl font-bold text-primary-600 hover:text-primary-700 transition-colors">
-                            Murugo
+                        <a href="{{ route('home') }}" class="flex items-center">
+                            <img src="{{ asset('images/murugo-logo.png') }}" 
+                                 alt="Murugo - Find Your Perfect Home" 
+                                 class="h-24 w-auto object-contain">
                         </a>
                     </div>
 
