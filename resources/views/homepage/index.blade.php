@@ -7,14 +7,22 @@
 <div id="main-content">
         <!-- Hero Section -->
     <section class="min-h-screen flex items-center relative overflow-hidden bg-slate-900">
-        <div class="absolute inset-0 bg-slate-800 opacity-50"></div>
-        <div class="container relative z-10">
-            <div class="text-center text-white">
-                <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="/images/heroes/homepage-hero.png" 
+                 alt="Find Your Perfect Home in Rwanda" 
+                 class="w-full h-full object-cover object-center">
+            <!-- Dark Overlay for Text Readability -->
+            <div class="absolute inset-0 bg-black/50"></div>
+        </div>
+        
+        <div class="container relative z-10 py-20">
+            <div class="text-center text-white max-w-5xl mx-auto">
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight drop-shadow-2xl">
                     Find Your Perfect Home in 
-                    <span class="text-yellow-300">Rwanda</span>
+                    <span class="text-yellow-300 drop-shadow-2xl">Rwanda</span>
                 </h1>
-                <p class="text-xl md:text-2xl mb-8 text-gray-100 max-w-3xl mx-auto">
+                <p class="text-xl md:text-2xl mb-8 text-white max-w-3xl mx-auto drop-shadow-lg leading-relaxed">
                     Discover thousands of rental properties across Kigali and beyond. 
                     Connect with trusted landlords and find your dream home today.
                 </p>

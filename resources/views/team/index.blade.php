@@ -5,11 +5,20 @@
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
-    <div class="bg-slate-900 text-white">
-        <div class="container py-16">
-            <div class="text-center">
-                <h1 class="text-heading-1 mb-6">Meet Our Team</h1>
-                <p class="text-body-lg text-gray-100 max-w-3xl mx-auto">
+    <div class="relative bg-slate-900 text-white overflow-hidden" style="min-height: 350px;">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="/images/heroes/team-hero.png" 
+                 alt="Meet Our Team - Murugo" 
+                 class="w-full h-full object-cover object-center">
+            <!-- Dark Overlay for Text Readability -->
+            <div class="absolute inset-0 bg-black/50"></div>
+        </div>
+        
+        <div class="container py-20 md:py-24 relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-2xl">Meet Our Team</h1>
+                <p class="text-lg md:text-xl text-white max-w-3xl mx-auto drop-shadow-lg">
                     The passionate individuals behind Murugo, working to revolutionize real estate in Rwanda
                 </p>
             </div>
@@ -155,10 +164,19 @@
     </div>
 
     <!-- Join Our Team Section -->
-    <div class="bg-indigo-600 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold text-white mb-4">Join Our Team</h2>
-            <p class="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
+    <div class="relative py-16 overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="/images/heroes/team-cta.png" 
+                 alt="Join Our Team at Murugo" 
+                 class="w-full h-full object-cover object-center">
+            <!-- Dark Overlay for Text Readability -->
+            <div class="absolute inset-0 bg-black/50"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-3xl font-bold text-white mb-4 drop-shadow-2xl">Join Our Team</h2>
+            <p class="text-xl text-white mb-8 max-w-2xl mx-auto drop-shadow-lg">
                 We're always looking for talented individuals who share our passion for revolutionizing real estate
             </p>
             <a href="mailto:careers@murugo.com" 

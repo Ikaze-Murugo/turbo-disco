@@ -6,11 +6,20 @@
 @section('content')
 <div id="main-content" class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
-    <div class="bg-slate-900 text-white mobile-hero">
-        <div class="container">
-            <div class="text-center">
-                <h1 class="text-heading-1 mb-4 mobile-hero">Discover Your Perfect Home</h1>
-                <p class="text-body-lg max-w-2xl mx-auto mb-8">
+    <div class="relative bg-slate-900 text-white overflow-hidden" style="min-height: 350px;">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="/images/heroes/properties-hero.png" 
+                 alt="Browse Properties in Rwanda" 
+                 class="w-full h-full object-cover object-center">
+            <!-- Dark Overlay for Text Readability -->
+            <div class="absolute inset-0 bg-black/50"></div>
+        </div>
+        
+        <div class="container relative z-10 py-20 md:py-24">
+            <div class="text-center max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-2xl">Discover Your Perfect Home</h1>
+                <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-white drop-shadow-lg">
                     Browse through thousands of rental properties across Rwanda. 
                     Find your dream home with our modern property search.
                 </p>
