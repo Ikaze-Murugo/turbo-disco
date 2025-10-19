@@ -95,8 +95,8 @@
                     </div>
                 </div>
                 
-                <!-- Center: Search Bar -->
-                <div class="flex-1 max-w-lg mx-8">
+                <!-- Center: Search Bar (Expandable on large desktop) -->
+                <div class="flex-1 xl:flex-initial mx-4">
                     <x-navigation.search-bar />
                 </div>
                 

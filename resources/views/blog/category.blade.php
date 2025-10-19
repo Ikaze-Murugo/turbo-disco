@@ -81,7 +81,7 @@
                                 <span class="ml-2 text-sm text-gray-500">{{ $post['read_time'] }}</span>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-3">
-                                <a href="{{ route('blog.show', 'rwanda-real-estate-market-outlook-2024') }}" 
+                                <a href="{{ route('blog.show', $post['slug']) }}" 
                                    class="hover:text-indigo-600 transition-colors">
                                     {{ $post['title'] }}
                                 </a>
@@ -90,7 +90,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
                                     <img class="h-6 w-6 rounded-full" 
-                                         src="{{ $post['author_image'] ?? '/images/team/ceo.jpg' }}" 
+                                         src="{{ $post['author_image'] ?? '/images/team/ceo.png' }}" 
                                          alt="{{ $post['author'] }}"
                                          onerror="this.src='https://via.placeholder.com/24x24?text={{ urlencode(substr($post['author'], 0, 1)) }}'">
                                     <div class="ml-2">
@@ -98,7 +98,7 @@
                                         <p class="text-xs text-gray-500">{{ date('M d, Y', strtotime($post['published_at'])) }}</p>
                                     </div>
                                 </div>
-                                <a href="{{ route('blog.show', 'rwanda-real-estate-market-outlook-2024') }}" 
+                                <a href="{{ route('blog.show', $post['slug']) }}" 
                                    class="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
                                     Read →
                                 </a>

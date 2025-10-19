@@ -1,0 +1,59 @@
+/* Simple Tooltip Styles for Navigation Icons */
+
+.nav-link.group {
+    position: relative;
+}
+
+/* Tooltip container */
+.nav-link.group::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    background-color: rgba(17, 24, 39, 0.95);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+    z-index: 50;
+}
+
+/* Tooltip arrow */
+.nav-link.group::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 6px 8px 6px;
+    border-style: solid;
+    border-color: transparent transparent rgba(17, 24, 39, 0.95) transparent;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+    z-index: 50;
+}
+
+/* Show tooltip on hover (desktop only) */
+@media (min-width: 768px) {
+    .nav-link.group:hover::after {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+    
+    .nav-link.group:hover::before {
+        opacity: 1;
+    }
+}
+
+/* Hide browser's default title tooltip */
+.nav-link.group {
+    position: relative;
+}
+

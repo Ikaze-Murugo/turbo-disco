@@ -24,6 +24,7 @@ class BlogController extends Controller
             [
                 'id' => 1,
                 'title' => 'Rwanda Real Estate Market Outlook 2024',
+                'slug' => 'rwanda-real-estate-market-outlook-2024',
                 'excerpt' => 'Discover the latest trends and opportunities in Rwanda\'s growing real estate market.',
                 'content' => 'The Rwandan real estate market continues to show strong growth potential...',
                 'image' => '/images/blog/market-outlook-2024.png',
@@ -38,6 +39,7 @@ class BlogController extends Controller
             [
                 'id' => 2,
                 'title' => 'First-Time Home Buyer\'s Complete Guide',
+                'slug' => 'first-time-home-buyers-complete-guide',
                 'excerpt' => 'Everything you need to know when buying your first home in Rwanda.',
                 'content' => 'Buying your first home is an exciting milestone...',
                 'image' => '/images/blog/first-time-buyer-guide.png',
@@ -55,6 +57,7 @@ class BlogController extends Controller
             [
                 'id' => 3,
                 'title' => 'Kigali\'s Best Neighborhoods for Young Professionals',
+                'slug' => 'kigali-best-neighborhoods-young-professionals',
                 'excerpt' => 'Explore the top areas in Kigali that offer the best lifestyle for young professionals.',
                 'content' => 'Kigali offers diverse neighborhoods each with unique characteristics...',
                 'image' => '/images/blog/kigali-neighborhoods.png',
@@ -69,6 +72,7 @@ class BlogController extends Controller
             [
                 'id' => 4,
                 'title' => 'Property Investment Strategies in Rwanda',
+                'slug' => 'property-investment-strategies-rwanda',
                 'excerpt' => 'Learn about profitable property investment opportunities in Rwanda.',
                 'content' => 'Rwanda\'s stable economy and growing population make it attractive...',
                 'image' => '/images/blog/investment-strategies.png',
@@ -83,6 +87,7 @@ class BlogController extends Controller
             [
                 'id' => 5,
                 'title' => 'Understanding Property Taxes in Rwanda',
+                'slug' => 'understanding-property-taxes-rwanda',
                 'excerpt' => 'A comprehensive guide to property taxes and legal requirements.',
                 'content' => 'Property ownership in Rwanda comes with certain tax obligations...',
                 'image' => '/images/blog/property-taxes.png',
@@ -97,6 +102,7 @@ class BlogController extends Controller
             [
                 'id' => 6,
                 'title' => 'Home Staging Tips for Quick Sales',
+                'slug' => 'home-staging-tips-quick-sales',
                 'excerpt' => 'Learn how to stage your home to attract buyers and sell faster.',
                 'content' => 'Proper home staging can significantly impact your sale price...',
                 'image' => '/images/blog/home-staging.png',
@@ -275,9 +281,11 @@ class BlogController extends Controller
                 [
                     'id' => 1,
                     'title' => 'Rwanda Real Estate Market Outlook 2024',
+                    'slug' => 'rwanda-real-estate-market-outlook-2024',
                     'excerpt' => 'Discover the latest trends and opportunities in Rwanda\'s growing real estate market.',
                     'image' => '/images/blog/market-outlook-2024.png',
                     'author' => 'Jean Baptiste',
+                    'author_image' => '/images/team/ceo.png',
                     'published_at' => '2024-01-15',
                     'read_time' => '5 min read'
                 ]
@@ -286,18 +294,22 @@ class BlogController extends Controller
                 [
                     'id' => 2,
                     'title' => 'First-Time Home Buyer\'s Complete Guide',
+                    'slug' => 'first-time-home-buyers-complete-guide',
                     'excerpt' => 'Everything you need to know when buying your first home in Rwanda.',
                     'image' => '/images/blog/first-time-buyer-guide.png',
                     'author' => 'Grace Uwimana',
+                    'author_image' => '/images/team/marketing.png',
                     'published_at' => '2024-01-10',
                     'read_time' => '8 min read'
                 ],
                 [
                     'id' => 6,
                     'title' => 'Home Staging Tips for Quick Sales',
+                    'slug' => 'home-staging-tips-quick-sales',
                     'excerpt' => 'Learn how to stage your home to attract buyers and sell faster.',
                     'image' => '/images/blog/home-staging.png',
                     'author' => 'David Nkurunziza',
+                    'author_image' => '/images/team/developer.png',
                     'published_at' => '2024-01-01',
                     'read_time' => '5 min read'
                 ]

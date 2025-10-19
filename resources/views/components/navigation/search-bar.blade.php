@@ -1,31 +1,60 @@
-{{-- Global Search Bar Component --}}
+{{-- Global Search Bar Component - Expandable --}}
 <div x-data="searchBar()" class="relative">
-    <!-- Search Input -->
+    <!-- Search Input (Desktop: Expandable, Mobile: Always Full) -->
     <div class="relative">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Search Icon Button (Desktop Only - Shows when collapsed) -->
+        <button @click="expanded = !expanded" 
+                x-show="!expanded" 
+                type="button"
+                class="hidden xl:flex items-center justify-center h-10 w-10 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                title="Search">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-        </div>
+        </button>
         
-        <input type="text" 
-               x-model="query"
-               @input="search()"
-               @focus="showSuggestions = true"
-               @blur="hideSuggestions()"
-               @keydown.arrow-down="navigateSuggestions('down')"
-               @keydown.arrow-up="navigateSuggestions('up')"
-               @keydown.enter="selectSuggestion()"
-               @keydown.escape="hideSuggestions()"
-               placeholder="Search properties, locations..."
-               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 text-sm">
-        
-        <!-- Loading Spinner -->
-        <div x-show="loading" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-            <svg class="animate-spin h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+        <!-- Full Search Input (Mobile: Always visible, Desktop: Shows when expanded) -->
+        <div x-show="expanded" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             class="relative xl:absolute xl:right-0 xl:w-96"
+             :class="{'block': true, 'xl:hidden': !expanded}">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            
+            <input type="text" 
+                   x-model="query"
+                   x-ref="searchInput"
+                   @input="search()"
+                   @focus="showSuggestions = true"
+                   @blur="hideSuggestions()"
+                   @keydown.escape="expanded = false; query = ''"
+                   @keydown.arrow-down="navigateSuggestions('down')"
+                   @keydown.arrow-up="navigateSuggestions('up')"
+                   @keydown.enter="selectSuggestion()"
+                   placeholder="Search properties..."
+                   class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+            
+            <!-- Close Button (Desktop Only - Shows when expanded) -->
+            <button @click="expanded = false; query = ''" 
+                    type="button"
+                    class="hidden xl:flex absolute inset-y-0 right-0 pr-3 items-center text-gray-400 hover:text-gray-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Loading Spinner -->
+            <div x-show="loading" class="absolute inset-y-0 right-10 pr-3 flex items-center">
+                <svg class="animate-spin h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
         </div>
     </div>
 
@@ -110,10 +139,29 @@ function searchBar() {
         showSuggestions: false,
         selectedIndex: -1,
         searchTimeout: null,
+        expanded: false, // For expandable search on desktop
 
         init() {
             // Load recent searches from localStorage
             this.recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+            
+            // On mobile/tablet, search is always expanded
+            // On desktop (xl), it starts collapsed
+            this.expanded = window.innerWidth < 1280;
+            
+            // Auto-focus when expanded
+            this.$watch('expanded', value => {
+                if (value) {
+                    this.$nextTick(() => this.$refs.searchInput?.focus());
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth < 1280) {
+                    this.expanded = true;
+                }
+            });
         },
 
         search() {

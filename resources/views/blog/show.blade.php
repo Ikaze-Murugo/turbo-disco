@@ -64,20 +64,20 @@
     </div>
 
     <!-- Article Image -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <img class="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" 
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <img class="w-full h-64 md:h-[500px] object-cover rounded-lg shadow-xl" 
              src="{{ $post['image'] }}" 
              alt="{{ $post['title'] }}"
-             onerror="this.src='https://via.placeholder.com/800x400?text={{ urlencode($post['title']) }}'">
+             onerror="this.src='https://via.placeholder.com/1200x500?text={{ urlencode($post['title']) }}'">
     </div>
 
     <!-- Article Content -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Main Content -->
-            <div class="lg:col-span-3">
-                <article class="bg-white rounded-lg shadow-lg p-8">
-                    <div class="prose prose-lg max-w-none">
+            <div class="lg:col-span-2">
+                <article class="bg-white rounded-lg shadow-lg p-8 lg:p-12">
+                    <div class="prose prose-lg max-w-none prose-p:mb-6 prose-headings:mb-4 prose-headings:mt-8 prose-ul:my-6 prose-li:mb-2">
                         {!! $post['content'] !!}
                     </div>
 
@@ -96,9 +96,9 @@
                     @endif
 
                     <!-- Share Buttons -->
-                    <div class="mt-8 pt-8 border-t border-gray-200">
+                    <div class="mt-8 pt-8 border-t border-gray-200" x-data="{ copied: false }">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Share this article</h3>
-                        <div class="flex space-x-4">
+                        <div class="flex flex-wrap gap-3">
                             <a href="https://twitter.com/intent/tweet?text={{ urlencode($post['title']) }}&url={{ urlencode(request()->url()) }}" 
                                target="_blank" rel="noopener noreferrer"
                                class="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
@@ -115,12 +115,18 @@
                                 </svg>
                                 LinkedIn
                             </a>
-                            <button onclick="navigator.clipboard.writeText('{{ request()->url() }}')" 
+                            <button @click="navigator.clipboard.writeText('{{ request()->url() }}'); copied = true; setTimeout(() => copied = false, 2000)" 
                                     class="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
                                 <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
-                                Copy Link
+                                <span x-show="!copied">Copy Link</span>
+                                <span x-show="copied" x-cloak class="flex items-center">
+                                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Copied!
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -128,21 +134,19 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="lg:col-span-1">
+            <div class="lg:col-span-1 space-y-6">
                 <!-- Author Card -->
-                <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">About the Author</h3>
-                    <div class="flex items-center mb-4">
-                        <img class="h-12 w-12 rounded-full" 
+                <div class="bg-white rounded-lg shadow-lg p-6 sticky top-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-6">About the Author</h3>
+                    <div class="text-center mb-4">
+                        <img class="h-24 w-24 rounded-full mx-auto mb-4 ring-4 ring-gray-100" 
                              src="{{ $post['author_image'] }}" 
                              alt="{{ $post['author'] }}"
-                             onerror="this.src='https://via.placeholder.com/48x48?text={{ urlencode(substr($post['author'], 0, 1)) }}'">
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-900">{{ $post['author'] }}</p>
-                            <p class="text-sm text-gray-500">Real Estate Expert</p>
-                        </div>
+                             onerror="this.src='https://via.placeholder.com/96x96?text={{ urlencode(substr($post['author'], 0, 1)) }}'">
+                        <p class="font-semibold text-gray-900 text-lg">{{ $post['author'] }}</p>
+                        <p class="text-sm text-gray-500 mt-1">Real Estate Expert</p>
                     </div>
-                    <p class="text-sm text-gray-600">
+                    <p class="text-sm text-gray-600 leading-relaxed text-center">
                         Experienced professional with deep knowledge of the Rwandan real estate market.
                     </p>
                 </div>
@@ -150,23 +154,25 @@
                 <!-- Related Posts -->
                 @if(count($relatedPosts) > 0)
                 <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Related Articles</h3>
-                    <div class="space-y-4">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Related Articles</h3>
+                    <div class="space-y-6">
                         @foreach($relatedPosts as $relatedPost)
-                        <article class="flex">
-                            <img class="h-16 w-16 rounded-lg object-cover flex-shrink-0" 
-                                 src="{{ $relatedPost['image'] }}" 
-                                 alt="{{ $relatedPost['title'] }}"
-                                 onerror="this.src='https://via.placeholder.com/64x64?text={{ urlencode($relatedPost['title']) }}'">
-                            <div class="ml-3">
-                                <h4 class="text-sm font-medium text-gray-900 mb-1">
-                                    <a href="{{ route('blog.show', $relatedPost['slug']) }}" 
-                                       class="hover:text-indigo-600 transition-colors">
-                                        {{ $relatedPost['title'] }}
-                                    </a>
+                        <article class="group">
+                            <a href="{{ route('blog.show', $relatedPost['slug']) }}" class="block">
+                                <img class="w-full h-32 rounded-lg object-cover mb-3 group-hover:opacity-90 transition-opacity" 
+                                     src="{{ $relatedPost['image'] }}" 
+                                     alt="{{ $relatedPost['title'] }}"
+                                     onerror="this.src='https://via.placeholder.com/300x150?text={{ urlencode($relatedPost['title']) }}'">
+                                <h4 class="font-medium text-gray-900 mb-2 leading-snug group-hover:text-indigo-600 transition-colors">
+                                    {{ $relatedPost['title'] }}
                                 </h4>
-                                <p class="text-xs text-gray-500">{{ $relatedPost['read_time'] }}</p>
-                            </div>
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    {{ $relatedPost['read_time'] }}
+                                </div>
+                            </a>
                         </article>
                         @endforeach
                     </div>
@@ -178,7 +184,7 @@
 
     <!-- Back to Blog -->
     <div class="bg-white border-t border-gray-200">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <a href="{{ route('blog.index') }}" 
                class="inline-flex items-center text-indigo-600 hover:text-indigo-500 font-medium">
                 <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
