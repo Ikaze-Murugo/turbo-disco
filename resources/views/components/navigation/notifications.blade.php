@@ -9,6 +9,13 @@
         }
     @endphp
 
+    @php
+        // Fetch recent unread notifications (limit per type) and merge for display
+        $reportNotifs = auth()->user()->reportNotifications()->latest()->take(5)->get();
+        $msgReportNotifs = auth()->user()->messageReportNotifications()->latest()->take(5)->get();
+        $allNotifications = $reportNotifs->concat($msgReportNotifs)->sortByDesc('created_at')->values();
+    @endphp
+
     <div x-data="notifications()" class="relative">
         <!-- Notification Bell -->
         <button @click="toggleNotifications()" 
@@ -51,52 +58,39 @@
 
             <!-- Notifications List -->
             <div class="max-h-96 overflow-y-auto">
-                @if($unreadCount > 0)
-                    <!-- Recent Notifications -->
-                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">
-                        Recent
-                    </div>
-                    
-                    <!-- Sample notification items - replace with actual notifications -->
-                    <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100">
-                        <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900">Report Status Update</p>
-                                <p class="text-sm text-gray-500">Your property report has been resolved</p>
-                                <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <div class="h-2 w-2 bg-red-500 rounded-full"></div>
-                            </div>
-                        </div>
-                    </div>
+                @if($allNotifications->count() > 0)
+                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">Recent</div>
 
-                    <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100">
-                        <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                                    <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                    </svg>
+                    @foreach($allNotifications as $n)
+                        @php
+                            $isReport = $n instanceof \App\Models\ReportNotification;
+                            $isUnread = !$n->is_read;
+                            $link = $isReport
+                                ? route('reports.show', ['report' => $n->report_id]) . '#notification-' . $n->id
+                                : route('message-reports.show', ['messageReport' => $n->message_report_id ?? ($n->metadata['message_report_id'] ?? null)]) . '#notification-' . $n->id;
+                            $type = $isReport ? 'report' : 'message_report';
+                        @endphp
+                        <a href="{{ $link }}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 {{ $isUnread ? 'bg-indigo-50' : '' }}"
+                           @click.prevent="markOneAsRead('{{ $type }}', {{ $n->id }}, '{{ $link }}')">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0">
+                                    <div class="h-8 w-8 {{ $isReport ? 'bg-blue-100' : 'bg-green-100' }} rounded-full flex items-center justify-center">
+                                        <span class="text-sm">{{ $isReport ? 'R' : 'M' }}</span>
+                                    </div>
                                 </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900">{{ $n->title ?? 'Notification' }}</p>
+                                    <p class="text-sm text-gray-500 truncate">{{ $n->message }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ $n->created_at->diffForHumans() }}</p>
+                                </div>
+                                @if($isUnread)
+                                <div class="flex-shrink-0">
+                                    <div class="h-2 w-2 bg-red-500 rounded-full"></div>
+                                </div>
+                                @endif
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900">New Message</p>
-                                <p class="text-sm text-gray-500">You have a new message from a potential tenant</p>
-                                <p class="text-xs text-gray-400 mt-1">4 hours ago</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <div class="h-2 w-2 bg-red-500 rounded-full"></div>
-                            </div>
-                        </div>
-                    </div>
+                        </a>
+                    @endforeach
                 @else
                     <!-- No Notifications -->
                     <div class="px-4 py-8 text-center">
@@ -126,14 +120,26 @@
 function notifications() {
     return {
         showNotifications: false,
+        markOneAsRead(type, id, link) {
+            fetch(`{{ route('notifications.mark-read', ['type' => 'TYPE', 'id' => 'ID']) }}`.replace('TYPE', type).replace('ID', id), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            }).then(() => {
+                window.location.href = link;
+            }).catch(() => {
+                window.location.href = link;
+            });
+        },
         
         toggleNotifications() {
             this.showNotifications = !this.showNotifications;
         },
         
         markAllAsRead() {
-            // Implement mark all as read functionality
-            fetch('/api/notifications/mark-all-read', {
+            fetch(`{{ route('notifications.mark-all-read') }}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

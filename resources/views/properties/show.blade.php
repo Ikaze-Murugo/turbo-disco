@@ -321,7 +321,11 @@
                         <div class="bg-gray-50 rounded-lg p-4 mb-6">
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Landlord Information</h3>
                             <p class="text-gray-700">
-                                <strong>Name:</strong> {{ $property->landlord->name }}
+                                <strong>Name:</strong>
+                                <a class="text-primary-600 hover:text-primary-700 underline-offset-2 hover:underline" 
+                                   href="{{ route('landlords.show', ['user' => $property->landlord_id, 'slug' => str($property->landlord->business_name ?: $property->landlord->name)->slug('-')]) }}">
+                                    {{ $property->landlord->business_name ?: $property->landlord->name }}
+                                </a>
                             </p>
                             <p class="text-gray-700">
                                 <strong>Email:</strong> {{ $property->landlord->email }}

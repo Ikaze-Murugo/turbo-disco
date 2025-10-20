@@ -17,6 +17,8 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\LandlordProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes (no authentication required)
@@ -42,6 +44,9 @@ Route::get('/cookies', [LegalController::class, 'cookies'])->name('legal.cookies
 // Team pages (no auth required)
 Route::get('/team', [TeamController::class, 'index'])->name('team.index');
 Route::get('/team/{id}', [TeamController::class, 'show'])->name('team.show');
+
+// Landlord profiles (publicly viewable)
+Route::get('/landlords/{user}/{slug?}', [LandlordProfileController::class, 'show'])->name('landlords.show');
 
 // Blog pages (no auth required)
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
@@ -136,6 +141,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/message-reports/{messageReport}/follow-up', [App\Http\Controllers\MessageReportController::class, 'requestFollowUp'])->name('message-reports.follow-up');
     Route::post('/message-reports/{messageReport}/mark-read', [App\Http\Controllers\MessageReportController::class, 'markNotificationsRead'])->name('message-reports.mark-read');
     Route::get('/message-reports/notifications/count', [App\Http\Controllers\MessageReportController::class, 'getUnreadCount'])->name('message-reports.notifications.count');
+
+    // Unified notifications routes
+    Route::post('/notifications/{type}/{id}/mark-read', [NotificationsController::class, 'markRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllRead'])->name('notifications.mark-all-read');
     
     // Report routes
     Route::resource('reports', ReportController::class)->only(['index', 'create', 'store', 'show']);

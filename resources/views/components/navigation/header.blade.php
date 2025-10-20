@@ -6,7 +6,7 @@
     <!-- Mobile Navigation -->
     <div class="xl:hidden">
         <!-- Mobile Header -->
-        <div class="flex justify-between items-center px-4 py-3">
+        <div class="flex justify-between items-center px-3 py-2">
             <!-- Left: Hamburger + Logo -->
             <div class="flex items-center space-x-3">
                 <button @click="toggleMobileMenu()" 
@@ -25,7 +25,7 @@
                    aria-label="Murugo - Go to homepage">
                     <img src="{{ asset('images/murugo-logo.png') }}" 
                          alt="Murugo - Find Your Perfect Home" 
-                         class="h-24 w-auto object-contain">
+                         class="h-10 w-auto object-contain">
                 </a>
             </div>
 

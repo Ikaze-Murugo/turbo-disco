@@ -131,6 +131,16 @@
         <h3 class="text-lg font-semibold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">
             {{ $property->title }}
         </h3>
+
+        <!-- Landlord (link to profile) -->
+        <p class="text-sm text-gray-600 mb-2">
+            By 
+            <a href="{{ route('landlords.show', ['user' => $property->landlord_id, 'slug' => str($property->landlord->business_name ?: $property->landlord->name)->slug('-')]) }}"
+               class="text-primary-600 hover:text-primary-700 underline-offset-2 hover:underline"
+               onclick="event.stopPropagation()">
+                {{ $property->landlord->business_name ?: $property->landlord->name }}
+            </a>
+        </p>
         
         <!-- Location -->
         <p class="text-gray-600 mb-3 flex items-center text-sm">
