@@ -126,7 +126,7 @@
                         <span class="text-xl font-bold text-white mb-2">Murugo Property Platform</span>
             <img src="{{ asset('images/murugo-logo.png') }}" 
                  alt="Murugo Logo" 
-                 class="h-12 w-auto object-contain">
+                 class="h-16 w-auto object-contain">
                     </div>
                     <p class="text-gray-300 mb-4">
                         Your trusted partner in finding the perfect property in Rwanda. 
@@ -172,9 +172,18 @@
 
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
                 <p>&copy; {{ date('Y') }} Murugo Property Platform. All rights reserved.</p>
+        </div>
+        
+        <!-- Murugo Name Image - Responsive Positioning -->
+        <div class="mt-12 pt-8 border-t border-gray-700">
+            <div class="flex justify-center">
+                <img src="{{ asset('images/murugo-name.png') }}" 
+                     alt="Murugo" 
+                     class="h-8 md:h-12 w-auto object-contain">
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
     <!-- JavaScript -->
     <script>

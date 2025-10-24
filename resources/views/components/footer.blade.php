@@ -8,7 +8,7 @@
                     <span class="text-xl font-bold text-white mb-2">Murugo</span>
             <img src="{{ asset('images/murugo-logo.png') }}" 
                  alt="Murugo Logo" 
-                 class="h-12 w-auto object-contain">
+                 class="h-16 w-auto object-contain">
                 </div>
                 <p class="text-gray-300 mb-6 leading-relaxed">
                     Your trusted partner in finding the perfect home in Rwanda. Connecting renters with landlords across the country with modern technology and exceptional service.
@@ -157,6 +157,15 @@
                     <a href="{{ route('legal.privacy') }}" class="text-gray-400 hover:text-white text-sm transition-colors duration-200">Privacy</a>
                     <a href="{{ route('legal.cookies') }}" class="text-gray-400 hover:text-white text-sm transition-colors duration-200">Cookies</a>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Murugo Name Image - Responsive Positioning -->
+        <div class="mt-12 pt-8 border-t border-gray-700">
+            <div class="flex justify-center">
+                <img src="{{ asset('images/murugo-name.png') }}" 
+                     alt="Murugo" 
+                     class="h-8 md:h-12 w-auto object-contain">
             </div>
         </div>
     </div>
