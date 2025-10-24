@@ -97,9 +97,9 @@
         <!-- Market Statistics Section -->
         <section class="section enhanced-stats">
             <div class="container">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">Rwanda's Leading Property Platform</h2>
-                    <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">Rwanda's Leading Property Platform</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                         Join thousands of satisfied users who have found their perfect home through Murugo
                     </p>
                 </div>
@@ -250,9 +250,9 @@
         <!-- Testimonials Section -->
         <section class="section testimonials-container">
             <div class="container">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">What Our Users Say</h2>
-                    <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">What Our Users Say</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                         Don't just take our word for it. Here's what our community has to say about Murugo.
                     </p>
                 </div>

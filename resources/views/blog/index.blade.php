@@ -202,9 +202,9 @@
     @if(!$selectedCategory && !$searchQuery)
     <div class="section blog-categories">
         <div class="container">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">Browse by Category</h2>
-                <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">Browse by Category</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                     Explore our curated content organized by topics that matter to you
                 </p>
             </div>

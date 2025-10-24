@@ -124,9 +124,9 @@
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex flex-col items-start mb-4">
                         <span class="text-xl font-bold text-white mb-2">Murugo Property Platform</span>
-                        <img src="{{ asset('images/murugo-logo.png') }}" 
-                             alt="Murugo Logo" 
-                             class="h-8 w-auto object-contain">
+            <img src="{{ asset('images/murugo-logo.png') }}" 
+                 alt="Murugo Logo" 
+                 class="h-12 w-auto object-contain">
                     </div>
                     <p class="text-gray-300 mb-4">
                         Your trusted partner in finding the perfect property in Rwanda. 

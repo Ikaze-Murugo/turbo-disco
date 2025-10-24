@@ -28,9 +28,9 @@
     <!-- Company Stats -->
     <div class="section team-stats">
         <div class="container">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">Our Impact</h2>
-                <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">Our Impact</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                     Numbers that reflect our commitment to transforming real estate in Rwanda
                 </p>
             </div>
