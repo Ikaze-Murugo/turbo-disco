@@ -32,8 +32,8 @@ return new class extends Migration
             
             // Add indexes for better performance
             $table->index(['status', 'priority']);
-            $table->index(['sender_id', 'created_at']);
-            $table->index(['recipient_id', 'created_at']);
+            $table->index(['report_id', 'created_at']);
+            $table->index(['message_id', 'created_at']);
             $table->index(['report_type', 'category']);
         });
     }
@@ -47,8 +47,8 @@ return new class extends Migration
             $table->dropForeign(['assigned_to']);
             $table->dropForeign(['resolved_by']);
             $table->dropIndex(['status', 'priority']);
-            $table->dropIndex(['sender_id', 'created_at']);
-            $table->dropIndex(['recipient_id', 'created_at']);
+            $table->dropIndex(['report_id', 'created_at']);
+            $table->dropIndex(['message_id', 'created_at']);
             $table->dropIndex(['report_type', 'category']);
             
             $table->dropColumn([
