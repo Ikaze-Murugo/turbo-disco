@@ -7,20 +7,20 @@
 <div class="min-h-screen bg-gray-50">
     <!-- Dashboard Header -->
     <div class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
                 <div>
-                    <h1 class="text-heading-1 text-gray-900">Welcome back, {{ auth()->user()->name }}!</h1>
-                    <p class="text-body text-gray-600 mt-1">Find your perfect home and manage your applications</p>
+                    <h1 class="text-xl md:text-heading-1 text-gray-900">Welcome back, {{ auth()->user()->name }}!</h1>
+                    <p class="text-sm md:text-body text-gray-600 mt-1">Find your perfect home and manage your applications</p>
                 </div>
-                <div class="flex space-x-3">
-                    <a href="{{ route('properties.public.index') }}" class="btn btn-primary">
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                    <a href="{{ route('properties.public.index') }}" class="btn btn-primary text-sm py-2 px-4">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         Browse Properties
                     </a>
-                    <a href="{{ route('properties.search-map') }}" class="btn btn-outline">
+                    <a href="{{ route('properties.search-map') }}" class="btn btn-outline text-sm py-2 px-4">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -34,40 +34,40 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
             <!-- Favorites -->
-            <div class="card">
-                <div class="card-body">
+            <div class="card p-3 md:p-6">
+                <div class="card-body p-0">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 md:w-12 md:h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 md:w-6 md:h-6 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                 </svg>
                             </div>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Favorites</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $stats['total_favorites'] }}</p>
+                        <div class="ml-3 md:ml-4">
+                            <p class="text-xs md:text-sm font-medium text-gray-500">Favorites</p>
+                            <p class="text-lg md:text-2xl font-bold text-gray-900">{{ $stats['total_favorites'] }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Messages -->
-            <div class="card">
-                <div class="card-body">
+            <div class="card p-3 md:p-6">
+                <div class="card-body p-0">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-info-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-info-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 md:w-12 md:h-12 bg-info-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 md:w-6 md:h-6 text-info-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                 </svg>
                             </div>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Messages</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $stats['total_messages'] }}</p>
+                        <div class="ml-3 md:ml-4">
+                            <p class="text-xs md:text-sm font-medium text-gray-500">Messages</p>
+                            <p class="text-lg md:text-2xl font-bold text-gray-900">{{ $stats['total_messages'] }}</p>
                             @if($stats['unread_messages'] > 0)
                                 <p class="text-xs text-warning-600">{{ $stats['unread_messages'] }} unread</p>
                             @endif
@@ -77,19 +77,19 @@
             </div>
 
             <!-- Reports Submitted -->
-            <div class="card">
-                <div class="card-body">
+            <div class="card p-3 md:p-6">
+                <div class="card-body p-0">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-warning-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 md:w-12 md:h-12 bg-warning-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 md:w-6 md:h-6 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                                 </svg>
                             </div>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Reports</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $stats['reports_submitted'] + $stats['message_reports_submitted'] }}</p>
+                        <div class="ml-3 md:ml-4">
+                            <p class="text-xs md:text-sm font-medium text-gray-500">Reports</p>
+                            <p class="text-lg md:text-2xl font-bold text-gray-900">{{ $stats['reports_submitted'] + $stats['message_reports_submitted'] }}</p>
                             @if($stats['pending_reports'] > 0)
                                 <p class="text-xs text-warning-600">{{ $stats['pending_reports'] }} pending</p>
                             @endif
@@ -99,19 +99,19 @@
             </div>
 
             <!-- Activity Score -->
-            <div class="card">
-                <div class="card-body">
+            <div class="card p-3 md:p-6">
+                <div class="card-body p-0">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-success-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 md:w-12 md:h-12 bg-success-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 md:w-6 md:h-6 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
                             </div>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Activity</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $activityData['properties_viewed'] + $activityData['messages_sent'] + $activityData['favorites_added'] }}</p>
+                        <div class="ml-3 md:ml-4">
+                            <p class="text-xs md:text-sm font-medium text-gray-500">Activity</p>
+                            <p class="text-lg md:text-2xl font-bold text-gray-900">{{ $activityData['properties_viewed'] + $activityData['messages_sent'] + $activityData['favorites_added'] }}</p>
                             <p class="text-xs text-gray-500">This month</p>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
         </div>
 
         <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
             <!-- Favorites & Recommendations -->
             <div class="lg:col-span-2">
                 <!-- Favorites Section -->
