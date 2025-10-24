@@ -26,24 +26,30 @@
     </div>
 
     <!-- Company Stats -->
-    <div class="section bg-white">
+    <div class="section team-stats">
         <div class="container">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary-600 mb-2">{{ number_format($companyStats['properties_listed']) }}+</div>
-                    <div class="text-gray-600">Properties Listed</div>
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">Our Impact</h2>
+                <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
+                    Numbers that reflect our commitment to transforming real estate in Rwanda
+                </p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="team-stat-card">
+                    <div class="team-stat-number">{{ number_format($companyStats['properties_listed']) }}+</div>
+                    <div class="team-stat-label">Properties Listed</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary-600 mb-2">{{ number_format($companyStats['happy_customers']) }}+</div>
-                    <div class="text-gray-600">Happy Customers</div>
+                <div class="team-stat-card">
+                    <div class="team-stat-number">{{ number_format($companyStats['happy_customers']) }}+</div>
+                    <div class="team-stat-label">Happy Customers</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary-600 mb-2">{{ $companyStats['cities_covered'] }}+</div>
-                    <div class="text-gray-600">Cities Covered</div>
+                <div class="team-stat-card">
+                    <div class="team-stat-number">{{ $companyStats['cities_covered'] }}+</div>
+                    <div class="team-stat-label">Cities Covered</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary-600 mb-2">{{ $companyStats['years_experience'] }}+</div>
-                    <div class="text-gray-600">Years Experience</div>
+                <div class="team-stat-card">
+                    <div class="team-stat-number">{{ $companyStats['years_experience'] }}+</div>
+                    <div class="team-stat-label">Years Experience</div>
                 </div>
             </div>
         </div>

@@ -200,24 +200,26 @@
 
     <!-- Categories Section -->
     @if(!$selectedCategory && !$searchQuery)
-    <div class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Browse by Category</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="section blog-categories">
+        <div class="container">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">Browse by Category</h2>
+                <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
+                    Explore our curated content organized by topics that matter to you
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 @foreach($categories as $category)
-                <a href="{{ route('blog.category', $category['slug']) }}" 
-                   class="group bg-gray-50 rounded-lg p-6 hover:bg-indigo-50 transition-colors">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                            <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-                            </svg>
-                        </div>
+                <a href="{{ route('blog.category', $category['slug']) }}" class="category-card">
+                    <div class="category-icon bg-white/20">
+                        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                        </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                    <h3 class="category-title">
                         {{ $category['name'] }}
                     </h3>
-                    <p class="text-gray-600 text-sm mt-2">
+                    <p class="category-description">
                         Explore articles about {{ strtolower($category['name']) }} and stay informed.
                     </p>
                 </a>

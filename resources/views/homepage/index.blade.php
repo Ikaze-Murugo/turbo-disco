@@ -95,35 +95,35 @@
     </section>
 
         <!-- Market Statistics Section -->
-        <section class="section bg-gray-50">
+        <section class="section enhanced-stats">
             <div class="container">
-                <div class="text-center mb-12">
-                    <h2 class="text-heading-2 mb-4">Rwanda's Leading Property Platform</h2>
-                    <p class="text-body-lg max-w-2xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">Rwanda's Leading Property Platform</h2>
+                    <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
                         Join thousands of satisfied users who have found their perfect home through Murugo
                     </p>
                 </div>
             
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-primary-600 mb-2">{{ number_format($marketStats['total_properties']) }}</div>
-                    <div class="text-gray-600">Active Properties</div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
+                <div class="stat-card">
+                    <div class="stat-number">{{ number_format($marketStats['total_properties']) }}</div>
+                    <div class="stat-label">Active Properties</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-primary-600 mb-2">{{ number_format($marketStats['total_landlords']) }}</div>
-                    <div class="text-gray-600">Trusted Landlords</div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ number_format($marketStats['total_landlords']) }}</div>
+                    <div class="stat-label">Trusted Landlords</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-primary-600 mb-2">{{ number_format($marketStats['total_renters']) }}</div>
-                    <div class="text-gray-600">Happy Renters</div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ number_format($marketStats['total_renters']) }}</div>
+                    <div class="stat-label">Happy Renters</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-primary-600 mb-2">RWF {{ number_format($marketStats['average_rent']) }}</div>
-                    <div class="text-gray-600">Average Rent</div>
+                <div class="stat-card">
+                    <div class="stat-number">RWF {{ number_format($marketStats['average_rent']) }}</div>
+                    <div class="stat-label">Average Rent</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-primary-600 mb-2">{{ number_format($marketStats['properties_this_month']) }}</div>
-                    <div class="text-gray-600">New This Month</div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ number_format($marketStats['properties_this_month']) }}</div>
+                    <div class="stat-label">New This Month</div>
                 </div>
             </div>
         </div>
@@ -248,42 +248,62 @@
     </section>
 
         <!-- Testimonials Section -->
-        <section class="section">
+        <section class="section testimonials-container">
             <div class="container">
-                <div class="text-center mb-12">
-                    <h2 class="text-heading-2 mb-4">What Our Users Say</h2>
-                    <p class="text-body-lg max-w-2xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">What Our Users Say</h2>
+                    <p class="text-xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
                         Don't just take our word for it. Here's what our community has to say about Murugo.
                     </p>
                 </div>
             
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonials-track">
                     @foreach($testimonials as $testimonial)
-                        <div class="card p-6">
-                        <div class="flex items-center mb-4">
-                            @for($i = 0; $i < $testimonial['rating']; $i++)
-                                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                </svg>
-                            @endfor
-                        </div>
-                        <p class="text-gray-600 mb-4">"{{ $testimonial['content'] }}"</p>
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
-                                <span class="text-primary-600 font-semibold text-sm">
+                        <div class="testimonial-card">
+                            <div class="testimonial-rating">
+                                @for($i = 0; $i < $testimonial['rating']; $i++)
+                                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                @endfor
+                            </div>
+                            <p class="testimonial-content">"{{ $testimonial['content'] }}"</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">
                                     {{ substr($testimonial['name'], 0, 2) }}
-                                </span>
-                            </div>
-                            <div>
-                                <div class="font-medium text-gray-900">{{ $testimonial['name'] }}</div>
-                                <div class="text-sm text-gray-500">{{ $testimonial['role'] }}, {{ $testimonial['location'] }}</div>
+                                </div>
+                                <div class="testimonial-info">
+                                    <h4>{{ $testimonial['name'] }}</h4>
+                                    <p>{{ $testimonial['role'] }}, {{ $testimonial['location'] }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                    <!-- Duplicate for seamless loop -->
+                    @foreach($testimonials as $testimonial)
+                        <div class="testimonial-card">
+                            <div class="testimonial-rating">
+                                @for($i = 0; $i < $testimonial['rating']; $i++)
+                                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                @endfor
+                            </div>
+                            <p class="testimonial-content">"{{ $testimonial['content'] }}"</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">
+                                    {{ substr($testimonial['name'], 0, 2) }}
+                                </div>
+                                <div class="testimonial-info">
+                                    <h4>{{ $testimonial['name'] }}</h4>
+                                    <p>{{ $testimonial['role'] }}, {{ $testimonial['location'] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
         <!-- CTA Section -->
         <section class="section bg-slate-900">
