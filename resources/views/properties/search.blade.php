@@ -104,7 +104,15 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($properties as $property)
-                        <x-property-card :property="$property" />
+                        <x-property-card 
+                            :property="$property"
+                            :show-carousel="true"
+                            :enable-favorites="auth()->check() && auth()->user()->isRenter()"
+                            :enable-comparison="auth()->check() && auth()->user()->isRenter()"
+                            :show-actions="true"
+                            layout="grid"
+                            class="w-full"
+                        />
                     @endforeach
                 </div>
 

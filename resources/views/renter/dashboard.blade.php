@@ -187,36 +187,15 @@
                         <div class="card-body">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @foreach($recommendedProperties->take(4) as $property)
-                                    <div class="property-card">
-                                        <div class="relative">
-                                            @if($property->images->count() > 0)
-                                                <img src="{{ Storage::url($property->images->first()->path) }}" 
-                                                     alt="{{ $property->title }}"
-                                                     class="property-card-image">
-                                            @else
-                                                <div class="w-full h-32 bg-gray-200 flex items-center justify-center">
-                                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                    </svg>
-                                                </div>
-                                            @endif
-                                            <div class="absolute top-2 right-2">
-                                                <span class="badge badge-primary">RWF {{ number_format($property->price) }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="p-4">
-                                            <h4 class="font-medium text-gray-900 mb-1">{{ $property->title }}</h4>
-                                            <p class="text-sm text-gray-600 mb-2">{{ $property->location }}</p>
-                                            <div class="flex items-center justify-between text-sm text-gray-500">
-                                                <span>{{ $property->bedrooms }} bed</span>
-                                                <span>{{ $property->bathrooms }} bath</span>
-                                                @if($property->area)
-                                                    <span>{{ $property->area }} m²</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <x-property-card 
+                                        :property="$property"
+                                        :show-carousel="true"
+                                        :enable-favorites="true"
+                                        :enable-comparison="true"
+                                        :show-actions="true"
+                                        layout="grid"
+                                        class="w-full"
+                                    />
                                 @endforeach
                             </div>
                         </div>

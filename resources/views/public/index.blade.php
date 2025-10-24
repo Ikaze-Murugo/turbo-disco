@@ -166,38 +166,15 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($recentProperties as $property)
-                <div class="property-card bg-white rounded-lg shadow-md overflow-hidden">
-                    @if($property->images->count() > 0)
-                        <div class="h-40 bg-gray-200">
-                            <img src="{{ Storage::url($property->images->first()->path) }}" 
-                                 alt="{{ $property->title }}" 
-                                 class="w-full h-full object-cover">
-                        </div>
-                    @else
-                        <div class="h-40 bg-gray-200 flex items-center justify-center">
-                            <span class="text-gray-400">No Image</span>
-                        </div>
-                    @endif
-                    
-                    <div class="p-4">
-                        <h3 class="font-semibold text-gray-900 mb-1 truncate">{{ $property->title }}</h3>
-                        <p class="text-sm text-gray-600 mb-2">{{ $property->location }}</p>
-                        
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="text-lg font-bold text-blue-600">
-                                {{ number_format($property->price) }} RWF
-                            </div>
-                            <div class="text-xs text-gray-500">
-                                {{ $property->created_at->diffForHumans() }}
-                            </div>
-                        </div>
-                        
-                        <a href="{{ route('public.property.show', $property) }}" 
-                           class="block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                            View Details
-                        </a>
-                    </div>
-                </div>
+                <x-property-card 
+                    :property="$property"
+                    :show-carousel="true"
+                    :enable-favorites="auth()->check() && auth()->user()->isRenter()"
+                    :enable-comparison="auth()->check() && auth()->user()->isRenter()"
+                    :show-actions="true"
+                    layout="grid"
+                    class="w-full"
+                />
             @endforeach
         </div>
     </div>
