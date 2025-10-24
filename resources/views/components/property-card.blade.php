@@ -5,6 +5,7 @@
     'enableFavorites' => false,
     'enableComparison' => false,
     'showActions' => true,
+    'layout' => 'grid',
     'class' => ''
 ])
 
@@ -20,15 +21,15 @@
     }
 @endphp
 
-<article class="property-card-enhanced group cursor-pointer {{ $class }}" 
+<article class="property-card-modern group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden {{ $layout === 'list' ? 'property-card-list' : 'property-card-grid' }} {{ $class }}" 
          onclick="window.location.href='{{ route($showRoute, $property) }}'"
          role="button"
          tabindex="0"
          aria-label="View {{ $property->title }} property details"
          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='{{ route($showRoute, $property) }}'}">
     
-    <!-- Property Image Section with Carousel -->
-    <div class="property-image-container relative overflow-hidden rounded-t-xl h-48">
+    <!-- Property Image Section with Enhanced Styling -->
+    <div class="relative aspect-[4/3] overflow-hidden">
         @if($property->images->count() > 0)
             <div class="property-image-carousel relative">
                 @if($showCarousel && $property->images->count() > 1)
@@ -85,10 +86,71 @@
             </div>
         @endif
         
+        <!-- Enhanced Badges -->
+        <div class="absolute top-3 left-3 flex gap-2">
+            @if($property->is_featured)
+                <span class="px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-semibold rounded-full shadow-lg flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                    Featured
+                </span>
+            @endif
+            
+            @if($property->created_at->diffInDays(now()) < 7)
+                <span class="px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                    New
+                </span>
+            @endif
+        </div>
+        
+        <!-- Quick Actions -->
+        @if($showActions && auth()->check())
+            <div class="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                @if(auth()->user()->isRenter())
+                    {{-- Favorite Button --}}
+                    <button 
+                        onclick="event.stopPropagation(); toggleFavorite({{ $property->id }})"
+                        class="favorite-btn p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 {{ $property->isFavoritedBy(auth()->id()) ? 'text-red-500' : 'text-gray-600' }}"
+                        data-property-id="{{ $property->id }}"
+                        title="Add to favorites">
+                        <svg class="w-5 h-5" fill="{{ $property->isFavoritedBy(auth()->id()) ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </button>
+                    
+                    {{-- Share Button --}}
+                    <button 
+                        onclick="event.stopPropagation(); shareProperty({{ $property->id }})"
+                        class="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 text-gray-600"
+                        title="Share property">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                        </svg>
+                    </button>
+                    
+                    {{-- Compare Button --}}
+                    @if($enableComparison)
+                        <button 
+                            onclick="event.stopPropagation(); addToCompare({{ $property->id }})"
+                            class="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 text-gray-600"
+                            title="Add to compare">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                        </button>
+                    @endif
+                @endif
+            </div>
+        @endif
+        
         <!-- Price Badge -->
-        <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-primary-600 shadow-sm" 
-             aria-label="Price: RWF {{ number_format($property->price) }}">
-            RWF {{ number_format($property->price) }}
+        <div class="absolute bottom-3 left-3">
+            <div class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-lg">
+                <div class="text-xs font-medium opacity-90">Price</div>
+                <div class="text-lg font-bold">{{ number_format($property->price) }} RWF</div>
+                <div class="text-xs opacity-90">per month</div>
+            </div>
         </div>
         
         <!-- Status Badge -->
@@ -126,11 +188,13 @@
     </div>
     
     <!-- Property Details Section -->
-    <div class="property-details p-4 flex flex-col h-full">
+    <div class="p-5">
         <!-- Title -->
-        <h3 class="text-lg font-semibold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">
-            {{ $property->title }}
-        </h3>
+        <a href="{{ route($showRoute, $property) }}" class="block group-hover:text-blue-600 transition-colors">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                {{ $property->title }}
+            </h3>
+        </a>
 
         <!-- Landlord (link to profile) -->
         <p class="text-sm text-gray-600 mb-2">
@@ -152,64 +216,47 @@
         </p>
         
         <!-- Property Features -->
-        <div class="flex items-center justify-between text-sm text-gray-500 mb-3">
-            <div class="flex items-center space-x-3">
-                <span class="flex items-center" aria-label="{{ $property->bedrooms }} bedrooms">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                    </svg>
-                    {{ $property->bedrooms }} bed
-                </span>
-                <span class="flex items-center" aria-label="{{ $property->bathrooms }} bathrooms">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7"></path>
-                    </svg>
-                    {{ $property->bathrooms }} bath
-                </span>
-                @if($property->area)
-                    <span class="flex items-center" aria-label="{{ $property->area }} square meters">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
-                        </svg>
-                        {{ $property->area }} m²
-                    </span>
-                @endif
+        <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="flex items-center text-sm text-gray-700">
+                <svg class="w-5 h-5 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                <span class="font-medium">{{ $property->bedrooms }}</span>
+                <span class="ml-1 text-gray-500">beds</span>
             </div>
-            <span class="badge badge-primary capitalize">{{ $property->type }}</span>
-        </div>
-        
-        <!-- Price -->
-        <div class="text-lg font-bold text-primary-600 mb-3">
-            RWF {{ number_format($property->price) }}
-        </div>
-        
-        <!-- Quick Actions (only for renters) -->
-        @if(auth()->check() && auth()->user()->isRenter())
-            <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
-                <div class="flex items-center space-x-2">
-                    <button class="favorite-btn p-2 rounded-full bg-gray-100 hover:bg-red-100 transition-colors"
-                            onclick="event.stopPropagation(); toggleFavorite({{ $property->id }})"
-                            data-property-id="{{ $property->id }}"
-                            data-favorited="{{ $property->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}"
-                            aria-label="Toggle favorite">
-                        <svg class="w-5 h-5 transition-colors {{ $property->isFavoritedBy(auth()->id()) ? 'text-red-500 fill-current' : 'text-gray-600' }}" 
-                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </button>
-                    @if($enableComparison)
-                        <button class="compare-btn p-2 rounded-full bg-gray-100 hover:bg-blue-100 transition-colors"
-                                onclick="event.stopPropagation(); addToComparison({{ $property->id }})"
-                                aria-label="Add to comparison">
-                            <svg class="w-5 h-5 text-gray-600 hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                        </button>
-                    @endif
+            
+            <div class="flex items-center text-sm text-gray-700">
+                <svg class="w-5 h-5 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                </svg>
+                <span class="font-medium">{{ $property->bathrooms }}</span>
+                <span class="ml-1 text-gray-500">baths</span>
+            </div>
+            
+            @if($property->area)
+                <div class="flex items-center text-sm text-gray-700">
+                    <svg class="w-5 h-5 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                    </svg>
+                    <span class="font-medium">{{ $property->area }}</span>
+                    <span class="ml-1 text-gray-500">m²</span>
                 </div>
-                <span class="text-xs text-gray-500">Click to view details</span>
-            </div>
-        @endif
+            @endif
+        </div>
+        
+        <!-- Property Type and Actions -->
+        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                {{ ucfirst($property->type) }}
+            </span>
+            
+            <a href="{{ route($showRoute, $property) }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+                View Details
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
     </div>
 </article>
 
@@ -302,9 +349,61 @@ function isFavorited(propertyId) {
     return favoriteBtn ? favoriteBtn.getAttribute('data-favorited') === 'true' : false;
 }
 
+// Share functionality
+function shareProperty(propertyId) {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Check out this property',
+            url: window.location.origin + '/properties/' + propertyId
+        });
+    } else {
+        // Fallback: copy to clipboard
+        const url = window.location.origin + '/properties/' + propertyId;
+        navigator.clipboard.writeText(url).then(() => {
+            if (typeof showNotification === 'function') {
+                showNotification('Link copied to clipboard!', 'success');
+            } else {
+                alert('Link copied to clipboard!');
+            }
+        });
+    }
+}
+
 // Comparison functionality
-function addToComparison(propertyId) {
-    // Add to comparison logic
-    console.log('Adding property to comparison:', propertyId);
+function addToCompare(propertyId) {
+    let compareList = JSON.parse(localStorage.getItem('compareProperties') || '[]');
+    
+    if (compareList.includes(propertyId)) {
+        if (typeof showNotification === 'function') {
+            showNotification('Property already in comparison list', 'info');
+        } else {
+            alert('Property already in comparison list');
+        }
+        return;
+    }
+    
+    if (compareList.length >= 4) {
+        if (typeof showNotification === 'function') {
+            showNotification('You can only compare up to 4 properties', 'warning');
+        } else {
+            alert('You can only compare up to 4 properties');
+        }
+        return;
+    }
+    
+    compareList.push(propertyId);
+    localStorage.setItem('compareProperties', JSON.stringify(compareList));
+    
+    // Update compare counter if it exists
+    const compareCounter = document.getElementById('compare-count');
+    if (compareCounter) {
+        compareCounter.textContent = compareList.length;
+    }
+    
+    if (typeof showNotification === 'function') {
+        showNotification('Property added to comparison', 'success');
+    } else {
+        alert('Property added to comparison');
+    }
 }
 </script>

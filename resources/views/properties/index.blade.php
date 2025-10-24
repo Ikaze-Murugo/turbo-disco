@@ -173,6 +173,7 @@
                             :enable-favorites="auth()->check() && auth()->user()->isRenter()"
                             :enable-comparison="auth()->check() && auth()->user()->isRenter()"
                             :show-actions="true"
+                            layout="grid"
                             class="w-full max-w-sm"
                         />
                     @endforeach
