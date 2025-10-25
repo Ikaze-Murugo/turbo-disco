@@ -250,7 +250,7 @@
                                             Unfeature
                                         </button>
                                     @else
-                                        <button onclick="showFeatureModal({{ $property->id }})" 
+                                        <button onclick="console.log('Feature button clicked for property {{ $property->id }}'); showFeatureModal({{ $property->id }})" 
                                                 class="text-blue-600 hover:text-blue-900">
                                             Feature
                                         </button>
@@ -354,6 +354,12 @@
 
 @push('scripts')
 <script>
+// Global error handler
+window.addEventListener('error', function(e) {
+    console.error('JavaScript Error:', e.error);
+    console.error('Error details:', e.filename, e.lineno, e.colno);
+});
+
 // Search functionality debugging
 document.addEventListener('DOMContentLoaded', function() {
     // Debug search form submission
@@ -464,10 +470,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Feature property modal
 function showFeatureModal(propertyId) {
+    console.log('showFeatureModal called with propertyId:', propertyId);
     const modal = document.getElementById('feature-modal');
     const form = document.getElementById('feature-form');
+    
+    if (!modal) {
+        console.error('Feature modal not found');
+        return;
+    }
+    
+    if (!form) {
+        console.error('Feature form not found');
+        return;
+    }
+    
     form.action = `/admin/featured-properties/${propertyId}/feature`;
     modal.classList.remove('hidden');
+    console.log('Modal should be visible now');
 }
 
 function closeFeatureModal() {
