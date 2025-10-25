@@ -2,19 +2,82 @@
    MINIMALISTIC ENHANCED SECTIONS STYLING
    ======================================== */
 
+/* Override ALL property card styling for featured properties section */
+.section .property-card-modern,
+.section .property-card,
+.section .property-card-enhanced {
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.2s ease !important;
+    transform: none !important;
+}
+
+.section .property-card-modern:hover,
+.section .property-card:hover,
+.section .property-card-enhanced:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    border-color: #d1d5db !important;
+}
+
+/* Override any conflicting hover effects */
+.section .property-card-modern:hover .property-card-image,
+.section .property-card:hover .property-card-image,
+.section .property-card-enhanced:hover .property-card-image {
+    transform: none !important;
+}
+
+/* Ensure minimalistic styling for all property card elements */
+.section .property-card-modern *,
+.section .property-card *,
+.section .property-card-enhanced * {
+    transition: all 0.2s ease !important;
+}
+
+/* Additional overrides for featured properties section */
+.section:has(.property-card-modern) {
+    background: #f9fafb !important;
+    border-top: 1px solid #e5e5e5 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+}
+
+/* Override any gradient backgrounds or fancy effects */
+.section .property-card-modern .bg-gradient-to-r,
+.section .property-card .bg-gradient-to-r,
+.section .property-card-enhanced .bg-gradient-to-r {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+}
+
+/* Ensure clean typography */
+.section .property-card-modern h3,
+.section .property-card h3,
+.section .property-card-enhanced h3 {
+    color: #111827 !important;
+    font-weight: 600 !important;
+}
+
+.section .property-card-modern p,
+.section .property-card p,
+.section .property-card-enhanced p {
+    color: #6b7280 !important;
+}
+
 /* Enhanced Statistics Section - Minimalistic */
 .enhanced-stats {
-    background: #fafafa;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    background: #fafafa !important;
+    border-top: 1px solid #e5e5e5 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
     position: relative;
 }
 
 .stat-card {
-    background: white;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 1.5rem 1rem;
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 8px !important;
+    padding: 1.5rem 1rem !important;
     text-align: center;
     transition: all 0.2s ease;
     position: relative;
@@ -44,9 +107,9 @@
 
 /* Enhanced Testimonials - Clean Horizontal Scrolling */
 .testimonials-container {
-    background: #f9fafb;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    background: #f9fafb !important;
+    border-top: 1px solid #e5e5e5 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
     position: relative;
     overflow: hidden;
 }
@@ -64,12 +127,12 @@
 }
 
 .testimonial-card {
-    flex: 0 0 320px;
-    background: white;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    flex: 0 0 320px !important;
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
     transition: all 0.2s ease;
 }
 
@@ -142,17 +205,17 @@
 
 /* Enhanced Team Stats - Minimalistic */
 .team-stats {
-    background: #fafafa;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    background: #fafafa !important;
+    border-top: 1px solid #e5e5e5 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
     position: relative;
 }
 
 .team-stat-card {
-    background: white;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 1.5rem 1rem;
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 8px !important;
+    padding: 1.5rem 1rem !important;
     text-align: center;
     transition: all 0.2s ease;
     position: relative;
@@ -182,17 +245,17 @@
 
 /* Enhanced Blog Categories - Clean Design */
 .blog-categories {
-    background: #f9fafb;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    background: #f9fafb !important;
+    border-top: 1px solid #e5e5e5 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
     position: relative;
 }
 
 .category-card {
-    background: white;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 1.25rem;
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 8px !important;
+    padding: 1.25rem !important;
     transition: all 0.2s ease;
     position: relative;
     text-decoration: none;
