@@ -21,6 +21,15 @@ class FeaturedPropertyController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             \Log::info('Search query received:', ['search' => $search]);
+            
+            // Debug: Check if any landlords match the search
+            $matchingLandlords = \App\Models\User::where('name', 'like', '%' . $search . '%')->get(['id', 'name']);
+            \Log::info('Matching landlords:', $matchingLandlords->toArray());
+            
+            // Debug: Check total approved properties
+            $totalApproved = Property::where('status', 'approved')->count();
+            \Log::info('Total approved properties:', ['count' => $totalApproved]);
+            
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', '%' . $search . '%')
                   ->orWhere('address', 'like', '%' . $search . '%')
@@ -49,6 +58,13 @@ class FeaturedPropertyController extends Controller
               ->orderBy('created_at', 'desc');
 
         $properties = $query->paginate(20);
+        
+        // Debug: Log the final results
+        \Log::info('Final query results:', [
+            'total_results' => $properties->total(),
+            'current_page_results' => $properties->count(),
+            'search_term' => $request->get('search', 'none')
+        ]);
 
         // Get statistics
         $stats = [
