@@ -65,6 +65,35 @@
     color: #6b7280 !important;
 }
 
+/* Unified Badge System - Clean and organized */
+.property-card-modern .absolute.top-3.left-3 {
+    z-index: 10;
+    pointer-events: none;
+}
+
+.property-card-modern .absolute.top-3.left-3 span {
+    pointer-events: auto;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.75rem;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+/* Badge priority and spacing */
+.property-card-modern .absolute.top-3.left-3 span:first-child {
+    margin-bottom: 0.25rem;
+}
+
+/* Ensure badges don't interfere with image */
+.property-card-modern .absolute.top-3.left-3 {
+    max-width: 120px;
+    word-wrap: break-word;
+}
+
 /* Enhanced Statistics Section - Minimalistic */
 .enhanced-stats {
     background: #fafafa !important;

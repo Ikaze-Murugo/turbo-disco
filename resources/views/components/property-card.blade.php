@@ -86,22 +86,52 @@
             </div>
         @endif
         
-        <!-- Enhanced Badges -->
-        <div class="absolute top-3 left-3 flex gap-2">
-            @if($property->is_featured)
-                <span class="px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-semibold rounded-full shadow-lg flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                    Featured
-                </span>
-            @endif
+        <!-- Unified Badge System -->
+        <div class="absolute top-3 left-3 flex flex-col gap-1 max-w-[120px]">
+            @php
+                $badges = [];
+                
+                // Priority 1: Featured (highest priority)
+                if($property->is_featured) {
+                    $badges[] = [
+                        'text' => 'Featured',
+                        'class' => 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white',
+                        'icon' => '<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>'
+                    ];
+                }
+                
+                // Priority 2: Status badges
+                if($property->status === 'active') {
+                    if($property->version_status === 'original' && $property->hasPendingUpdates()) {
+                        $badges[] = ['text' => 'Pending Updates', 'class' => 'bg-orange-500 text-white', 'icon' => ''];
+                    } else {
+                        $badges[] = ['text' => 'Available', 'class' => 'bg-green-500 text-white', 'icon' => ''];
+                    }
+                } elseif($property->status === 'pending') {
+                    if($property->version_status === 'pending_update') {
+                        $badges[] = ['text' => 'Update Pending', 'class' => 'bg-blue-500 text-white', 'icon' => ''];
+                    } else {
+                        $badges[] = ['text' => 'Pending', 'class' => 'bg-yellow-500 text-white', 'icon' => ''];
+                    }
+                }
+                
+                // Priority 3: New badge (only if not featured to avoid clutter)
+                if(!$property->is_featured && $property->created_at->diffInDays(now()) < 7) {
+                    $badges[] = ['text' => 'New', 'class' => 'bg-green-500 text-white', 'icon' => ''];
+                }
+                
+                // Limit to 2 badges maximum to prevent clutter
+                $badges = array_slice($badges, 0, 2);
+            @endphp
             
-            @if($property->created_at->diffInDays(now()) < 7)
-                <span class="px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow-lg">
-                    New
+            @foreach($badges as $badge)
+                <span class="px-2 py-1 {{ $badge['class'] }} text-xs font-medium rounded-full shadow-sm flex items-center gap-1 truncate">
+                    @if($badge['icon'])
+                        {!! $badge['icon'] !!}
+                    @endif
+                    <span class="truncate">{{ $badge['text'] }}</span>
                 </span>
-            @endif
+            @endforeach
         </div>
         
         <!-- Quick Actions -->
@@ -153,37 +183,7 @@
             </div>
         </div>
         
-        <!-- Status Badge -->
-        @if($property->status === 'active')
-            @if($property->version_status === 'original' && $property->hasPendingUpdates())
-                <div class="absolute top-4 left-4 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-medium" 
-                     aria-label="Property has pending updates">
-                    Pending Updates
-                </div>
-            @else
-                <div class="absolute top-4 left-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium" 
-                     aria-label="Property is available">
-                    Available
-                </div>
-            @endif
-        @elseif($property->status === 'pending')
-            @if($property->version_status === 'pending_update')
-                <div class="absolute top-4 left-4 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium" 
-                     aria-label="Property update pending approval">
-                    Update Pending
-                </div>
-            @else
-                <div class="absolute top-4 left-4 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium" 
-                     aria-label="Property is pending approval">
-                    Pending
-                </div>
-            @endif
-        @elseif($property->status === 'featured')
-            <div class="absolute top-4 left-4 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium" 
-                 aria-label="Featured property">
-                Featured
-            </div>
-        @endif
+        <!-- Status badges are now handled in the unified badge system above -->
         
     </div>
     
