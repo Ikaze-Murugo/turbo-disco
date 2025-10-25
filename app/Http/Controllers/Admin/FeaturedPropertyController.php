@@ -15,7 +15,7 @@ class FeaturedPropertyController extends Controller
     public function index(Request $request)
     {
         $query = Property::with(['landlord', 'images'])
-            ->where('status', 'approved');
+            ->where('status', 'active');
 
         // Search functionality
         if ($request->filled('search')) {
@@ -26,9 +26,9 @@ class FeaturedPropertyController extends Controller
             $matchingLandlords = \App\Models\User::where('name', 'like', '%' . $search . '%')->get(['id', 'name']);
             \Log::info('Matching landlords:', $matchingLandlords->toArray());
             
-            // Debug: Check total approved properties
-            $totalApproved = Property::where('status', 'approved')->count();
-            \Log::info('Total approved properties:', ['count' => $totalApproved]);
+            // Debug: Check total active properties
+            $totalActive = Property::where('status', 'active')->count();
+            \Log::info('Total active properties:', ['count' => $totalActive]);
             
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', '%' . $search . '%')
@@ -68,9 +68,9 @@ class FeaturedPropertyController extends Controller
 
         // Get statistics
         $stats = [
-            'total_properties' => Property::where('status', 'approved')->count(),
-            'featured_properties' => Property::where('status', 'approved')->where('is_featured', true)->count(),
-            'expiring_soon' => Property::where('status', 'approved')
+            'total_properties' => Property::where('status', 'active')->count(),
+            'featured_properties' => Property::where('status', 'active')->where('is_featured', true)->count(),
+            'expiring_soon' => Property::where('status', 'active')
                 ->where('is_featured', true)
                 ->where('featured_until', '<=', now()->addDays(3))
                 ->count(),
@@ -131,7 +131,7 @@ class FeaturedPropertyController extends Controller
         ]);
 
         $count = Property::whereIn('id', $request->property_ids)
-            ->where('status', 'approved')
+            ->where('status', 'active')
             ->update([
                 'is_featured' => true,
                 'featured_until' => now()->addDays($request->duration),
