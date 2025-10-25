@@ -49,7 +49,9 @@ class HomepageController extends Controller
         return Cache::remember('featured_properties', 300, function () {
             return Property::where('status', 'active')
                 ->where('is_available', true)
+                ->where('is_featured', true)  // Only get actually featured properties
                 ->with(['landlord', 'images'])
+                ->orderBy('priority', 'desc')  // Order by priority (high, medium, low)
                 ->orderBy('created_at', 'desc')
                 ->limit(6)
                 ->get();

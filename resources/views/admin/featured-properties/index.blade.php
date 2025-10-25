@@ -468,8 +468,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Feature property modal
-function showFeatureModal(propertyId) {
+// Feature property modal - Global function
+window.showFeatureModal = function(propertyId) {
     console.log('showFeatureModal called with propertyId:', propertyId);
     const modal = document.getElementById('feature-modal');
     const form = document.getElementById('feature-form');
@@ -489,12 +489,12 @@ function showFeatureModal(propertyId) {
     console.log('Modal should be visible now');
 }
 
-function closeFeatureModal() {
+window.closeFeatureModal = function() {
     document.getElementById('feature-modal').classList.add('hidden');
 }
 
 // Unfeature property
-function unfeatureProperty(propertyId) {
+window.unfeatureProperty = function(propertyId) {
     if (confirm('Are you sure you want to unfeature this property?')) {
         const form = document.createElement('form');
         form.method = 'POST';
@@ -512,7 +512,7 @@ function unfeatureProperty(propertyId) {
 }
 
 // Analytics modal
-function showAnalytics() {
+window.showAnalytics = function() {
     const modal = document.getElementById('analytics-modal');
     modal.classList.remove('hidden');
     
@@ -550,12 +550,12 @@ function showAnalytics() {
         });
 }
 
-function closeAnalyticsModal() {
+window.closeAnalyticsModal = function() {
     document.getElementById('analytics-modal').classList.add('hidden');
 }
 
 // Bulk feature modal
-function showBulkFeatureModal(propertyIds) {
+window.showBulkFeatureModal = function(propertyIds) {
     const modal = document.getElementById('feature-modal');
     const form = document.getElementById('feature-form');
     form.action = '{{ route("admin.featured-properties.bulk-feature") }}';
