@@ -166,45 +166,34 @@ class HomepageController extends Controller
     }
 
     /**
-     * Handle homepage search
+     * Handle homepage search - redirect to properties search with filters
      */
     public function search(Request $request)
     {
-        $query = $request->get('q', '');
-        $location = $request->get('location', '');
-        $minPrice = $request->get('min_price');
-        $maxPrice = $request->get('max_price');
-        $propertyType = $request->get('property_type');
-
-        $properties = Property::where('status', 'active')
-            ->where('is_available', true)
-            ->with(['landlord', 'images']);
-
-        if ($query) {
-            $properties->where(function ($q) use ($query) {
-                $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
-            });
+        // Build search parameters from homepage form
+        $searchParams = [];
+        
+        if ($request->filled('q')) {
+            $searchParams['search'] = $request->get('q');
+        }
+        
+        if ($request->filled('location')) {
+            $searchParams['location'] = $request->get('location');
+        }
+        
+        if ($request->filled('min_price')) {
+            $searchParams['min_price'] = $request->get('min_price');
+        }
+        
+        if ($request->filled('max_price')) {
+            $searchParams['max_price'] = $request->get('max_price');
+        }
+        
+        if ($request->filled('property_type')) {
+            $searchParams['type'] = $request->get('property_type');
         }
 
-        if ($location) {
-            $properties->where('location', 'like', "%{$location}%");
-        }
-
-        if ($minPrice) {
-            $properties->where('price', '>=', $minPrice);
-        }
-
-        if ($maxPrice) {
-            $properties->where('price', '<=', $maxPrice);
-        }
-
-        if ($propertyType) {
-            $properties->where('type', $propertyType);
-        }
-
-        $properties = $properties->paginate(12);
-
-        return view('homepage.search-results', compact('properties', 'query', 'location', 'minPrice', 'maxPrice', 'propertyType'));
+        // Redirect to public search with parameters
+        return redirect()->route('public.search', $searchParams);
     }
 }
