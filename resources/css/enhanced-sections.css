@@ -53,9 +53,10 @@
 
 .testimonials-track {
     display: flex;
-    animation: scroll 40s linear infinite;
+    animation: scroll 30s linear infinite;
     gap: 1.5rem;
     padding: 2rem 0;
+    width: calc(200% + 3rem); /* Ensure seamless loop */
 }
 
 .testimonials-track:hover {
@@ -376,12 +377,30 @@
     transform: translateY(-3px);
 }
 
-/* Accessibility Improvements */
+/* Performance optimizations for smooth animation */
+.testimonials-track {
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Ensure smooth scrolling on all devices */
+@media (prefers-reduced-motion: no-preference) {
+    .testimonials-track {
+        animation: scroll 30s linear infinite;
+    }
+}
+
+/* Disable animation for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .testimonials-track {
         animation: none;
+        transform: none;
     }
-    
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
     .stat-card:hover,
     .team-stat-card:hover,
     .category-card:hover {
