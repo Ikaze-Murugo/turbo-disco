@@ -4,34 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use App\Models\Amenity;
+use App\Services\PropertySearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PublicPropertiesController extends Controller
 {
+    protected $searchService;
+
+    public function __construct(PropertySearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
     /**
      * Display the main properties listing page
      */
     public function index(Request $request)
     {
-        $query = Property::with(['images', 'nearbyAmenities', 'landlord'])
-            ->where('status', 'active')
-            ->where('is_available', true);
-
-        // Apply filters
-        $query = $this->applyFilters($query, $request);
-
-        // Apply sorting
-        $query = $this->applySorting($query, $request);
-
-        // Get paginated results
-        $properties = $query->paginate(12);
+        // Use the optimized search service
+        $properties = $this->searchService->search($request, 12);
 
         // Get filter options
-        $filterOptions = $this->getFilterOptions();
+        $filterOptions = $this->searchService->getFilterOptions();
 
         // Get search suggestions
-        $searchSuggestions = $this->getSearchSuggestions($request->get('search'));
+        $searchSuggestions = $this->searchService->getSearchSuggestions($request->get('search'));
 
         return view('properties-public.index', compact(
             'properties',
@@ -45,24 +43,14 @@ class PublicPropertiesController extends Controller
      */
     public function search(Request $request)
     {
-        $query = Property::with(['images', 'nearbyAmenities', 'landlord'])
-            ->where('status', 'active')
-            ->where('is_available', true);
-
-        // Apply filters
-        $query = $this->applyFilters($query, $request);
-
-        // Apply sorting
-        $query = $this->applySorting($query, $request);
-
-        // Get paginated results
-        $properties = $query->paginate(12);
+        // Use the optimized search service
+        $properties = $this->searchService->search($request, 12);
 
         // Get filter options
-        $filterOptions = $this->getFilterOptions();
+        $filterOptions = $this->searchService->getFilterOptions();
 
         // Get search suggestions
-        $searchSuggestions = $this->getSearchSuggestions($request->get('search'));
+        $searchSuggestions = $this->searchService->getSearchSuggestions($request->get('search'));
 
         return view('properties-public.search', compact(
             'properties',
