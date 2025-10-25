@@ -171,7 +171,7 @@
                             :property="$property"
                             :show-carousel="true"
                             :enable-favorites="auth()->check() && auth()->user()->isRenter()"
-                            :enable-comparison="auth()->check() && auth()->user()->isRenter()"
+                            :enable-comparison="true"
                             :show-actions="true"
                             layout="grid"
                             class="w-full max-w-sm"

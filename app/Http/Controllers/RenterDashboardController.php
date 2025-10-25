@@ -34,9 +34,9 @@ class RenterDashboardController extends Controller
                 ->orWhere('recipient_id', $user->id)->count(),
             'unread_messages' => Message::where('recipient_id', $user->id)
                 ->where('is_read', false)->count(),
-            'reports_submitted' => Report::where('user_id', $user->id)->count(),
+            'reports_submitted' => Report::where('reporter_id', $user->id)->count(),
             'message_reports_submitted' => MessageReport::where('user_id', $user->id)->count(),
-            'pending_reports' => Report::where('user_id', $user->id)
+            'pending_reports' => Report::where('reporter_id', $user->id)
                 ->where('status', 'pending')->count() + 
                 MessageReport::where('user_id', $user->id)
                 ->where('status', 'pending')->count(),
@@ -50,7 +50,7 @@ class RenterDashboardController extends Controller
             ->limit(5)
             ->get();
         
-        $recentReports = Report::where('user_id', $user->id)
+        $recentReports = Report::where('reporter_id', $user->id)
                               ->with('property')
                               ->latest()
                               ->limit(5)
@@ -125,7 +125,7 @@ class RenterDashboardController extends Controller
                 ->where('created_at', '>=', $thirtyDaysAgo)->count(),
             'favorites_added' => Favorite::where('user_id', $userId)
                 ->where('created_at', '>=', $thirtyDaysAgo)->count(),
-            'reports_submitted' => Report::where('user_id', $userId)
+            'reports_submitted' => Report::where('reporter_id', $userId)
                 ->where('created_at', '>=', $thirtyDaysAgo)->count() +
                 MessageReport::where('user_id', $userId)
                 ->where('created_at', '>=', $thirtyDaysAgo)->count(),

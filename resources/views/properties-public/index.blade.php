@@ -105,7 +105,7 @@
                         :property="$property"
                         :show-carousel="true"
                         :enable-favorites="auth()->check() && auth()->user()->isRenter()"
-                        :enable-comparison="auth()->check() && auth()->user()->isRenter()"
+                        :enable-comparison="true"
                         :show-actions="true"
                         layout="grid"
                         class="w-full"
@@ -144,34 +144,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterToggle = document.getElementById('filterToggle');
     const filtersPanel = document.getElementById('filtersPanel');
     
-    filterToggle.addEventListener('click', function() {
-        filtersPanel.classList.toggle('hidden');
-    });
+    if (filterToggle && filtersPanel) {
+        filterToggle.addEventListener('click', function() {
+            filtersPanel.classList.toggle('hidden');
+        });
+    }
     
     // View toggle
     const gridView = document.getElementById('gridView');
     const listView = document.getElementById('listView');
     const propertiesGrid = document.getElementById('propertiesGrid');
     
-    gridView.addEventListener('click', function() {
-        gridView.classList.add('active');
-        listView.classList.remove('active');
-        propertiesGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
-    });
-    
-    listView.addEventListener('click', function() {
-        listView.classList.add('active');
-        gridView.classList.remove('active');
-        propertiesGrid.className = 'grid grid-cols-1 gap-6';
-    });
+    if (gridView && listView && propertiesGrid) {
+        gridView.addEventListener('click', function() {
+            gridView.classList.add('active');
+            listView.classList.remove('active');
+            propertiesGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
+        });
+        
+        listView.addEventListener('click', function() {
+            listView.classList.add('active');
+            gridView.classList.remove('active');
+            propertiesGrid.className = 'grid grid-cols-1 gap-6';
+        });
+    }
     
     // Sort functionality
     const sortSelect = document.getElementById('sortSelect');
-    sortSelect.addEventListener('change', function() {
-        const url = new URL(window.location);
-        url.searchParams.set('sort', this.value);
-        window.location.href = url.toString();
-    });
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const url = new URL(window.location);
+            url.searchParams.set('sort', this.value);
+            window.location.href = url.toString();
+        });
+    }
 });
 </script>
 

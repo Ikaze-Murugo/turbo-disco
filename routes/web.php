@@ -299,4 +299,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+// Property Comparison Routes
+Route::prefix('compare')->name('compare.')->group(function () {
+    Route::get('/', [App\Http\Controllers\ComparisonController::class, 'index'])->name('index');
+    Route::post('/add', [App\Http\Controllers\ComparisonController::class, 'add'])->name('add');
+    Route::delete('/remove/{id}', [App\Http\Controllers\ComparisonController::class, 'remove'])->name('remove');
+    Route::post('/clear', [App\Http\Controllers\ComparisonController::class, 'clear'])->name('clear');
+    Route::get('/count', [App\Http\Controllers\ComparisonController::class, 'count'])->name('count');
+    Route::post('/track-completion', [App\Http\Controllers\ComparisonController::class, 'trackCompletion'])->name('track-completion');
+    Route::get('/analytics', [App\Http\Controllers\ComparisonController::class, 'analytics'])->name('analytics');
+});
+
 require __DIR__.'/auth.php';

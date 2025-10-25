@@ -135,10 +135,34 @@
         </div>
         
         <!-- Quick Actions -->
-        @if($showActions && auth()->check())
+        @if($showActions)
             <div class="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                @if(auth()->user()->isRenter())
-                    {{-- Favorite Button --}}
+                {{-- Share Button --}}
+                <button 
+                    onclick="event.stopPropagation(); shareProperty({{ $property->id }})"
+                    class="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 text-gray-600"
+                    title="Share property">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                    </svg>
+                </button>
+                
+                {{-- Compare Button --}}
+                @if($enableComparison)
+                    <button 
+                        onclick="event.stopPropagation(); addToCompare({{ $property->id }})"
+                        data-property-id="{{ $property->id }}"
+                        data-action="compare"
+                        class="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 text-gray-600"
+                        title="Add to compare">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </button>
+                @endif
+                
+                {{-- Favorite Button (only for authenticated renters) --}}
+                @if(auth()->check() && auth()->user()->isRenter() && $enableFavorites)
                     <button 
                         onclick="event.stopPropagation(); toggleFavorite({{ $property->id }})"
                         class="favorite-btn p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 {{ $property->isFavoritedBy(auth()->id()) ? 'text-red-500' : 'text-gray-600' }}"
@@ -148,28 +172,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
                     </button>
-                    
-                    {{-- Share Button --}}
-                    <button 
-                        onclick="event.stopPropagation(); shareProperty({{ $property->id }})"
-                        class="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 text-gray-600"
-                        title="Share property">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                        </svg>
-                    </button>
-                    
-                    {{-- Compare Button --}}
-                    @if($enableComparison)
-                        <button 
-                            onclick="event.stopPropagation(); addToCompare({{ $property->id }})"
-                            class="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-200 text-gray-600"
-                            title="Add to compare">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                        </button>
-                    @endif
                 @endif
             </div>
         @endif
@@ -354,11 +356,11 @@ function shareProperty(propertyId) {
     if (navigator.share) {
         navigator.share({
             title: 'Check out this property',
-            url: window.location.origin + '/properties/' + propertyId
+            url: window.location.origin + '/listings/' + propertyId
         });
     } else {
         // Fallback: copy to clipboard
-        const url = window.location.origin + '/properties/' + propertyId;
+        const url = window.location.origin + '/listings/' + propertyId;
         navigator.clipboard.writeText(url).then(() => {
             if (typeof showNotification === 'function') {
                 showNotification('Link copied to clipboard!', 'success');
@@ -369,41 +371,155 @@ function shareProperty(propertyId) {
     }
 }
 
-// Comparison functionality
+// Enhanced Comparison functionality with server sync
 function addToCompare(propertyId) {
-    let compareList = JSON.parse(localStorage.getItem('compareProperties') || '[]');
-    
-    if (compareList.includes(propertyId)) {
-        if (typeof showNotification === 'function') {
-            showNotification('Property already in comparison list', 'info');
-        } else {
-            alert('Property already in comparison list');
-        }
+    // Show loading state
+    const compareButton = document.querySelector(`[data-property-id="${propertyId}"][data-action="compare"]`);
+    if (!compareButton) {
+        console.error('Compare button not found for property:', propertyId);
         return;
     }
     
-    if (compareList.length >= 4) {
-        if (typeof showNotification === 'function') {
-            showNotification('You can only compare up to 4 properties', 'warning');
+    const originalContent = compareButton.innerHTML;
+    compareButton.innerHTML = '<svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+    compareButton.disabled = true;
+    
+    // Send to server
+    fetch('/compare/add', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            property_id: propertyId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Restore button state
+        compareButton.innerHTML = originalContent;
+        compareButton.disabled = false;
+        
+        if (data.success) {
+            // Update comparison counters
+            updateComparisonCounters(data.count);
+            
+            // Update button state
+            compareButton.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Added';
+            compareButton.classList.add('bg-green-500', 'text-white');
+            compareButton.classList.remove('bg-gray-100', 'text-gray-600');
+            
+            // Show success message
+            showNotification(data.message, 'success');
+            
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                compareButton.innerHTML = originalContent;
+                compareButton.classList.remove('bg-green-500', 'text-white');
+                compareButton.classList.add('bg-gray-100', 'text-gray-600');
+            }, 2000);
         } else {
-            alert('You can only compare up to 4 properties');
+            showNotification(data.message || 'Error adding property to comparison', 'error');
         }
-        return;
-    }
+    })
+    .catch(error => {
+        // Restore button state
+        compareButton.innerHTML = originalContent;
+        compareButton.disabled = false;
+        
+        console.error('Error:', error);
+        showNotification('Error adding property to comparison', 'error');
+    });
+}
+
+// Update all comparison counters
+function updateComparisonCounters(count) {
+    const counters = [
+        'compare-count',
+        'compare-count-mobile', 
+        'compare-count-desktop'
+    ];
     
-    compareList.push(propertyId);
-    localStorage.setItem('compareProperties', JSON.stringify(compareList));
+    counters.forEach(id => {
+        const counter = document.getElementById(id);
+        if (counter) {
+            counter.textContent = count;
+            counter.style.display = count > 0 ? 'inline' : 'none';
+        }
+    });
     
-    // Update compare counter if it exists
-    const compareCounter = document.getElementById('compare-count');
-    if (compareCounter) {
-        compareCounter.textContent = compareList.length;
-    }
-    
-    if (typeof showNotification === 'function') {
-        showNotification('Property added to comparison', 'success');
-    } else {
-        alert('Property added to comparison');
+    // Update comparison button text if it exists
+    const compareButton = document.querySelector('[data-comparison-count]');
+    if (compareButton) {
+        compareButton.setAttribute('data-comparison-count', count);
+        if (count > 0) {
+            compareButton.textContent = `Compare (${count})`;
+        } else {
+            compareButton.textContent = 'Compare';
+        }
     }
 }
+
+// Enhanced notification system
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.comparison-notification');
+    existingNotifications.forEach(notification => notification.remove());
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `comparison-notification fixed top-4 right-4 z-50 px-6 py-3 rounded-md shadow-lg text-white max-w-sm transform transition-all duration-300 ${
+        type === 'success' ? 'bg-green-500' : 
+        type === 'error' ? 'bg-red-500' : 
+        type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+    }`;
+    
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                ${type === 'success' ? '<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>' : 
+                  type === 'error' ? '<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>' :
+                  '<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'}
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-medium">${message}</p>
+            </div>
+            <div class="ml-4 flex-shrink-0">
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-white hover:text-gray-200">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.add('translate-x-0', 'opacity-100');
+    }, 10);
+    
+    // Remove notification after 4 seconds
+    setTimeout(() => {
+        notification.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 4000);
+}
+
+// Initialize comparison counters on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Update comparison count from server
+    fetch('/compare/count')
+        .then(response => response.json())
+        .then(data => {
+            updateComparisonCounters(data.count);
+        })
+        .catch(error => {
+            console.error('Error fetching comparison count:', error);
+        });
+});
 </script>

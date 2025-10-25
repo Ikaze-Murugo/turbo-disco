@@ -435,8 +435,15 @@ function priceSlider(min, max) {
     return {
         min: min,
         max: max,
+        filters: {
+            min_price: '{{ request("min_price") }}',
+            max_price: '{{ request("max_price") }}'
+        },
         init() {
-            this.filters = this.$parent.filters;
+            // Try to get filters from parent, fallback to local filters
+            if (this.$parent && this.$parent.filters) {
+                this.filters = this.$parent.filters;
+            }
         },
         formatPrice(price) {
             return new Intl.NumberFormat('en-RW', {

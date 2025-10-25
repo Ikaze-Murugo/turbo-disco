@@ -77,7 +77,7 @@
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($properties as $property)
-                    <x-property-card :property="$property" :showCarousel="false" :enableFavorites="true" />
+                    <x-property-card :property="$property" :showCarousel="false" :enableFavorites="true" :enable-comparison="true" />
                 @endforeach
             </div>
             <div class="mt-6">{{ $properties->withQueryString()->links() }}</div>
