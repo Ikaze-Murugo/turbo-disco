@@ -13,67 +13,13 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Search Form -->
+            <!-- Advanced Filters -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route('properties.search') }}" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Search Input -->
-                            <div>
-                                <x-input-label for="search" :value="__('Search')" />
-                                <x-text-input id="search" type="text" name="search" 
-                                             :value="request('search')" 
-                                             placeholder="Search by title, description, or location" />
-                            </div>
-
-                            <!-- Location -->
-                            <div>
-                                <x-input-label for="location" :value="__('Location')" />
-                                <x-text-input id="location" type="text" name="location" 
-                                             :value="request('location')" 
-                                             placeholder="e.g., Kigali, Remera" />
-                            </div>
-
-                            <!-- Bedrooms -->
-                            <div>
-                                <x-input-label for="bedrooms" :value="__('Min Bedrooms')" />
-                                <select id="bedrooms" name="bedrooms" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                    <option value="">Any</option>
-                                    <option value="1" {{ request('bedrooms') == '1' ? 'selected' : '' }}>1+</option>
-                                    <option value="2" {{ request('bedrooms') == '2' ? 'selected' : '' }}>2+</option>
-                                    <option value="3" {{ request('bedrooms') == '3' ? 'selected' : '' }}>3+</option>
-                                    <option value="4" {{ request('bedrooms') == '4' ? 'selected' : '' }}>4+</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Min Price -->
-                            <div>
-                                <x-input-label for="min_price" :value="__('Min Price (RWF)')" />
-                                <x-text-input id="min_price" type="number" name="min_price" 
-                                             :value="request('min_price')" 
-                                             placeholder="e.g., 100000" />
-                            </div>
-
-                            <!-- Max Price -->
-                            <div>
-                                <x-input-label for="max_price" :value="__('Max Price (RWF)')" />
-                                <x-text-input id="max_price" type="number" name="max_price" 
-                                             :value="request('max_price')" 
-                                             placeholder="e.g., 500000" />
-                            </div>
-                        </div>
-
-                        <div class="flex justify-between">
-                            <a href="{{ route('properties.search') }}" class="text-gray-600 hover:text-gray-800">
-                                Clear Filters
-                            </a>
-                            <x-primary-button type="submit">
-                                {{ __('Search') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+                    <x-advanced-property-filters 
+                        :filter-options="$filterOptions" 
+                        :current-filters="request()->all()" 
+                        class="w-full" />
                 </div>
             </div>
 

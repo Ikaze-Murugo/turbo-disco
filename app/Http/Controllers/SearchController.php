@@ -6,60 +6,27 @@ use App\Models\Property;
 use App\Models\SearchHistory;
 use App\Models\SavedSearch;
 use App\Models\PropertyComparison;
+use App\Services\PropertySearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class SearchController extends Controller
 {
+    protected $searchService;
+
+    public function __construct(PropertySearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
     /**
      * Display map-based property search.
      */
     public function searchMap(Request $request)
     {
-        $query = Property::query();
-
-        // Base query - show active properties to everyone
-        $query->where('status', 'active');
-
-        // For authenticated renters, also check availability
-        if (Auth::check() && Auth::user()->isRenter()) {
-            $query->where('is_available', true);
-        }
-
-        // Apply filters
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-
-        if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
-        }
-
-        if ($request->filled('min_bedrooms')) {
-            $query->where('bedrooms', '>=', $request->min_bedrooms);
-        }
-
-        if ($request->filled('min_bathrooms')) {
-            $query->where('bathrooms', '>=', $request->min_bathrooms);
-        }
-
-        // Amenity filters
-        if ($request->has('amenities')) {
-            $amenities = $request->amenities;
-            foreach ($amenities as $amenity) {
-                $query->where($amenity, true);
-            }
-        }
-
-        // Only show properties with coordinates for map display
-        $query->whereNotNull('latitude')
-              ->whereNotNull('longitude');
-
-        // Load relationships for map display
-        $properties = $query->with(['landlord', 'images'])
-                           ->orderBy('created_at', 'desc')
-                           ->get();
+        // Use the optimized search service for map view
+        $properties = $this->searchService->search($request, 50); // More properties for map view
 
         return view('properties.search-map', compact('properties'));
     }
@@ -69,27 +36,11 @@ class SearchController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Property::query();
+        // Use the optimized search service
+        $properties = $this->searchService->search($request, 12);
 
-        // Base query - show active properties to everyone
-        $query->where('status', 'active');
-
-        // For authenticated renters, also check availability
-        if (Auth::check() && Auth::user()->isRenter()) {
-            $query->where('is_available', true);
-        }
-
-        // Apply advanced filters
-        $query = $this->applyAdvancedFilters($query, $request);
-
-        // Apply sorting
-        $query = $this->applySorting($query, $request);
-
-        $properties = $query->with(['landlord', 'images'])
-                           ->paginate(12);
-
-        // Get filter options for the sidebar
-        $filterOptions = $this->getFilterOptions();
+        // Get filter options
+        $filterOptions = $this->searchService->getFilterOptions();
 
         // Save search history
         $this->saveSearchHistory($request, $properties->total());

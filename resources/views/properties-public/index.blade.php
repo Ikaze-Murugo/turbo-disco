@@ -61,126 +61,13 @@
         </div>
     </div>
 
-    <!-- Filters Section -->
+    <!-- Advanced Filters Section -->
     <div class="bg-white border-b border-gray-200">
         <div class="container py-6">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <!-- Filter Toggle -->
-                <button id="filterToggle" class="btn btn-ghost flex items-center space-x-2">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
-                    </svg>
-                    <span>Filters</span>
-                </button>
-
-                <!-- View Toggle -->
-                <div class="flex items-center space-x-2">
-                    <button id="gridView" class="btn btn-icon text-gray-400 hover:text-gray-600 active">
-                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                        </svg>
-                    </button>
-                    <button id="listView" class="btn btn-icon text-gray-400 hover:text-gray-600">
-                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Sort Dropdown -->
-                <div class="flex items-center space-x-2">
-                    <label class="form-label">Sort by:</label>
-                    <select id="sortSelect" class="form-input">
-                        <option value="newest">Newest First</option>
-                        <option value="price_low">Price: Low to High</option>
-                        <option value="price_high">Price: High to Low</option>
-                        <option value="size_large">Size: Largest First</option>
-                        <option value="size_small">Size: Smallest First</option>
-                        <option value="popular">Most Popular</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Advanced Filters Panel -->
-            <div id="filtersPanel" class="hidden mt-6 pt-6 border-t border-gray-200">
-                <form action="{{ route('properties.public.search') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Price Range -->
-                    <div>
-                        <label class="form-label">Price Range</label>
-                        <div class="space-y-2">
-                            <input type="number" name="min_price" placeholder="Min Price" 
-                                   class="form-input"
-                                   value="{{ request('min_price') }}">
-                            <input type="number" name="max_price" placeholder="Max Price" 
-                                   class="form-input"
-                                   value="{{ request('max_price') }}">
-                        </div>
-                    </div>
-
-                    <!-- Bedrooms -->
-                    <div>
-                        <label class="form-label">Bedrooms</label>
-                        <select name="bedrooms" class="form-input">
-                            <option value="">Any</option>
-                            <option value="1" {{ request('bedrooms') == '1' ? 'selected' : '' }}>1+</option>
-                            <option value="2" {{ request('bedrooms') == '2' ? 'selected' : '' }}>2+</option>
-                            <option value="3" {{ request('bedrooms') == '3' ? 'selected' : '' }}>3+</option>
-                            <option value="4" {{ request('bedrooms') == '4' ? 'selected' : '' }}>4+</option>
-                            <option value="5" {{ request('bedrooms') == '5' ? 'selected' : '' }}>5+</option>
-                        </select>
-                    </div>
-
-                    <!-- Bathrooms -->
-                    <div>
-                        <label class="form-label">Bathrooms</label>
-                        <select name="bathrooms" class="form-input">
-                            <option value="">Any</option>
-                            <option value="1" {{ request('bathrooms') == '1' ? 'selected' : '' }}>1+</option>
-                            <option value="2" {{ request('bathrooms') == '2' ? 'selected' : '' }}>2+</option>
-                            <option value="3" {{ request('bathrooms') == '3' ? 'selected' : '' }}>3+</option>
-                            <option value="4" {{ request('bathrooms') == '4' ? 'selected' : '' }}>4+</option>
-                        </select>
-                    </div>
-
-                    <!-- Furnishing Status -->
-                    <div>
-                        <label class="form-label">Furnishing</label>
-                        <select name="furnishing_status" class="form-input">
-                            <option value="">Any</option>
-                            @foreach($filterOptions['furnishing_statuses'] as $status)
-                                <option value="{{ $status }}" {{ request('furnishing_status') == $status ? 'selected' : '' }}>
-                                    {{ ucfirst(str_replace('-', ' ', $status)) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Amenities -->
-                    <div class="md:col-span-2 lg:col-span-4">
-                        <label class="form-label">Amenities</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                            @foreach($filterOptions['amenities'] as $amenity)
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" name="amenities[]" value="{{ $amenity->id }}" 
-                                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                           {{ in_array($amenity->id, (array) request('amenities', [])) ? 'checked' : '' }}>
-                                    <span class="text-sm text-gray-700">{{ $amenity->name }}</span>
-                                </label>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="md:col-span-2 lg:col-span-4 flex justify-end space-x-4">
-                        <a href="{{ route('properties.public.index') }}" class="btn btn-outline">
-                            Clear Filters
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            Apply Filters
-                        </button>
-                    </div>
-                </form>
-            </div>
+            <x-advanced-property-filters 
+                :filter-options="$filterOptions" 
+                :current-filters="request()->all()" 
+                class="w-full" />
         </div>
     </div>
 

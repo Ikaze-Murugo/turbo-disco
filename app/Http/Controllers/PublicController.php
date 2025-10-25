@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Property;
+use App\Services\PropertySearchService;
 use Illuminate\Http\Request;
 
 class PublicController extends Controller
 {
+    protected $searchService;
+
+    public function __construct(PropertySearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
     /**
      * Display the public homepage with featured properties.
      */
@@ -42,64 +50,11 @@ class PublicController extends Controller
      */
     public function properties(Request $request)
     {
-        $query = Property::where('status', 'active')
-            ->with(['images', 'landlord']);
+        // Use the optimized search service
+        $properties = $this->searchService->search($request, 12);
 
-        // Apply filters if provided
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-
-        if ($request->filled('purpose')) {
-            // We'll add purpose field later, for now filter by price range
-            if ($request->purpose === 'rent') {
-                $query->where('price', '<=', 1000000); // Assuming rent properties are under 1M
-            } elseif ($request->purpose === 'sale') {
-                $query->where('price', '>', 1000000); // Assuming sale properties are over 1M
-            }
-        }
-
-        if ($request->filled('price_min')) {
-            $query->where('price', '>=', $request->price_min);
-        }
-
-        if ($request->filled('price_max')) {
-            $query->where('price', '<=', $request->price_max);
-        }
-
-        if ($request->filled('bedrooms')) {
-            $query->where('bedrooms', '>=', $request->bedrooms);
-        }
-
-        if ($request->filled('bathrooms')) {
-            $query->where('bathrooms', '>=', $request->bathrooms);
-        }
-
-        if ($request->filled('location')) {
-            $query->where('location', 'like', '%' . $request->location . '%');
-        }
-
-        // Apply sorting
-        $sortBy = $request->get('sort', 'priority');
-        $sortOrder = $request->get('order', 'desc');
-        
-        if ($sortBy === 'priority') {
-            $query->byPriority();
-        } elseif (in_array($sortBy, ['price', 'created_at', 'bedrooms', 'bathrooms', 'view_count'])) {
-            $query->orderBy($sortBy, $sortOrder);
-        } else {
-            $query->byPriority();
-        }
-
-        $properties = $query->paginate(12);
-
-        // Get filter options for the sidebar
-        $filterOptions = [
-            'types' => Property::where('status', 'active')->distinct()->pluck('type')->filter(),
-            'locations' => Property::where('status', 'active')->distinct()->pluck('location')->filter(),
-            'bedrooms' => Property::where('status', 'active')->distinct()->pluck('bedrooms')->filter()->sort(),
-            'bathrooms' => Property::where('status', 'active')->distinct()->pluck('bathrooms')->filter()->sort(),
-        ];
+        // Get filter options
+        $filterOptions = $this->searchService->getFilterOptions();
 
         return view('public.properties', compact('properties', 'filterOptions'));
     }
