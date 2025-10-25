@@ -375,6 +375,25 @@
 
 .testimonial-card:hover {
     transform: translateY(-3px);
+    cursor: pointer;
+}
+
+/* Interactive Testimonial Cards */
+.testimonial-card {
+    cursor: pointer;
+    user-select: none;
+}
+
+.testimonial-card:active {
+    transform: translateY(-1px);
+}
+
+/* Smooth transitions for all interactive elements */
+.stat-card,
+.team-stat-card,
+.category-card,
+.testimonial-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Performance optimizations for smooth animation */

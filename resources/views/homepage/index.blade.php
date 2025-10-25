@@ -327,6 +327,45 @@
      </div>
      @endsection
 
+<script>
+// Interactive testimonials
+document.addEventListener('DOMContentLoaded', function() {
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+    
+    testimonialCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Add a subtle pulse effect when clicked
+            this.style.transform = 'translateY(-3px) scale(1.02)';
+            this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+            
+            setTimeout(() => {
+                this.style.transform = 'translateY(-3px) scale(1)';
+                this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+            }, 150);
+        });
+        
+        // Add hover sound effect (optional)
+        card.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+    });
+    
+    // Pause animation on hover for better readability
+    const testimonialsContainer = document.querySelector('.testimonials-container');
+    const testimonialsTrack = document.querySelector('.testimonials-track');
+    
+    if (testimonialsContainer && testimonialsTrack) {
+        testimonialsContainer.addEventListener('mouseenter', function() {
+            testimonialsTrack.style.animationPlayState = 'paused';
+        });
+        
+        testimonialsContainer.addEventListener('mouseleave', function() {
+            testimonialsTrack.style.animationPlayState = 'running';
+        });
+    }
+});
+</script>
+
      @push('scripts')
 <script>
     // Simple search suggestions (can be enhanced later)
