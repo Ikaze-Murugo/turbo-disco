@@ -20,6 +20,7 @@ class FeaturedPropertyController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
+            \Log::info('Search query received:', ['search' => $search]);
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', '%' . $search . '%')
                   ->orWhere('address', 'like', '%' . $search . '%')
