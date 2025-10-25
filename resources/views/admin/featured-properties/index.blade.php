@@ -214,12 +214,17 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @if($property->is_featured && $property->featured_until)
                                     <div class="flex items-center">
-                                        <span>{{ $property->featured_until->format('M d, Y') }}</span>
-                                        @if($property->featured_until->isPast())
+                                        @php
+                                            $featuredUntil = is_string($property->featured_until) 
+                                                ? \Carbon\Carbon::parse($property->featured_until) 
+                                                : $property->featured_until;
+                                        @endphp
+                                        <span>{{ $featuredUntil->format('M d, Y') }}</span>
+                                        @if($featuredUntil->isPast())
                                             <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                 Expired
                                             </span>
-                                        @elseif($property->featured_until->diffInDays() <= 3)
+                                        @elseif($featuredUntil->diffInDays() <= 3)
                                             <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                                                 Expiring Soon
                                             </span>

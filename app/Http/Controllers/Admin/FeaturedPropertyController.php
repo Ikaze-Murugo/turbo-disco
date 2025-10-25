@@ -89,9 +89,18 @@ class FeaturedPropertyController extends Controller
             'priority' => 'required|in:low,medium,high',
         ]);
 
+        $featuredUntil = now()->addDays($request->duration);
+        
+        \Log::info('Featuring property', [
+            'property_id' => $property->id,
+            'duration' => $request->duration,
+            'featured_until' => $featuredUntil,
+            'priority' => $request->priority
+        ]);
+
         $property->update([
             'is_featured' => true,
-            'featured_until' => now()->addDays($request->duration),
+            'featured_until' => $featuredUntil,
             'priority' => $request->priority,
         ]);
 
