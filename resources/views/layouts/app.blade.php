@@ -58,5 +58,8 @@
             <!-- Enhanced Footer -->
             <x-footer />
         </div>
+        
+        <!-- Scripts Stack -->
+        @stack('scripts')
     </body>
 </html>

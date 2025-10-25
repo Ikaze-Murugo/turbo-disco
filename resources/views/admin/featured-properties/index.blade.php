@@ -352,7 +352,6 @@
 
 @endsection
 
-@push('scripts')
 <script>
 // Global error handler
 window.addEventListener('error', function(e) {
@@ -572,4 +571,3 @@ window.showBulkFeatureModal = function(propertyIds) {
     modal.classList.remove('hidden');
 }
 </script>
-@endpush
