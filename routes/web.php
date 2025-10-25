@@ -208,6 +208,14 @@ Route::middleware(['auth', 'verified', 'role:admin', 'rate_limit.admin'])->prefi
     Route::post('/reports/{report}/resolve', [App\Http\Controllers\Admin\ReportManagementController::class, 'resolve'])->name('admin.reports.resolve');
     Route::post('/reports/bulk-action', [App\Http\Controllers\Admin\ReportManagementController::class, 'bulkAction'])->name('admin.reports.bulk-action');
     
+    // Featured properties management routes
+    Route::get('/featured-properties', [App\Http\Controllers\Admin\FeaturedPropertyController::class, 'index'])->name('admin.featured-properties.index');
+    Route::post('/featured-properties/{property}/feature', [App\Http\Controllers\Admin\FeaturedPropertyController::class, 'feature'])->name('admin.featured-properties.feature');
+    Route::post('/featured-properties/{property}/unfeature', [App\Http\Controllers\Admin\FeaturedPropertyController::class, 'unfeature'])->name('admin.featured-properties.unfeature');
+    Route::post('/featured-properties/bulk-feature', [App\Http\Controllers\Admin\FeaturedPropertyController::class, 'bulkFeature'])->name('admin.featured-properties.bulk-feature');
+    Route::post('/featured-properties/bulk-unfeature', [App\Http\Controllers\Admin\FeaturedPropertyController::class, 'bulkUnfeature'])->name('admin.featured-properties.bulk-unfeature');
+    Route::get('/featured-properties/analytics', [App\Http\Controllers\Admin\FeaturedPropertyController::class, 'analytics'])->name('admin.featured-properties.analytics');
+    
     // Enhanced admin report routes
     Route::post('/reports/{report}/comment', [App\Http\Controllers\Admin\ReportManagementController::class, 'addComment'])->name('admin.reports.comment');
     Route::patch('/reports/{report}/status', [App\Http\Controllers\Admin\ReportManagementController::class, 'updateStatus'])->name('admin.reports.status');
