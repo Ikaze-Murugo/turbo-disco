@@ -56,6 +56,20 @@
                             <p class="text-sm text-gray-500 mt-1">Enter the complete address for automatic location detection</p>
                         </div>
 
+                        <!-- Location Picker -->
+                        <div class="mb-6">
+                            <x-input-label :value="__('Property Location')" />
+                            <p class="text-sm text-gray-600 mb-4">Drag the marker on the map to set the exact location of your property</p>
+                            <x-map.location-picker 
+                                :latitude="old('latitude', -1.9441)"
+                                :longitude="old('longitude', 30.0619)"
+                                height="400px"
+                                :required="true"
+                            />
+                            <x-input-error :messages="$errors->get('latitude')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('longitude')" class="mt-2" />
+                        </div>
+
                         <!-- Bedrooms and Bathrooms -->
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>

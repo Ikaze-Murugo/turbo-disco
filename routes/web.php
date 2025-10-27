@@ -57,6 +57,7 @@ Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('
 Route::get('/listings', [App\Http\Controllers\PublicPropertiesController::class, 'index'])->name('properties.public.index');
 Route::get('/listings/search', [App\Http\Controllers\PublicPropertiesController::class, 'search'])->name('properties.public.search');
 Route::get('/listings-map', [App\Http\Controllers\PublicPropertiesController::class, 'map'])->name('properties.public.map');
+Route::get('/debug-map', function() { return view('debug-map'); });
 Route::get('/listings/{id}', [App\Http\Controllers\PublicPropertiesController::class, 'show'])->name('properties.public.show');
 Route::get('/api/properties/suggestions', [App\Http\Controllers\PublicPropertiesController::class, 'getSuggestions'])->name('properties.suggestions');
 
@@ -96,7 +97,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('rate_limit.property_management');
     
     Route::get('/search', [SearchController::class, 'index'])->name('properties.search');
+    Route::get('/map', [SearchController::class, 'map'])->name('properties.map');
     Route::get('/search-map', [SearchController::class, 'searchMap'])->name('properties.search-map');
+    Route::get('/mobile-search', [SearchController::class, 'mobileSearch'])->name('properties.mobile-search');
     
     // Dashboard routes
     Route::get('/landlord/dashboard', [App\Http\Controllers\LandlordDashboardController::class, 'index'])->name('landlord.dashboard');
@@ -308,6 +311,30 @@ Route::prefix('compare')->name('compare.')->group(function () {
     Route::get('/count', [App\Http\Controllers\ComparisonController::class, 'count'])->name('count');
     Route::post('/track-completion', [App\Http\Controllers\ComparisonController::class, 'trackCompletion'])->name('track-completion');
     Route::get('/analytics', [App\Http\Controllers\ComparisonController::class, 'analytics'])->name('analytics');
+});
+
+// API Routes for Maps Integration
+Route::prefix('api')->group(function () {
+    Route::get('/properties/geojson', [App\Http\Controllers\Api\PropertyController::class, 'geojson'])->name('api.properties.geojson');
+    Route::get('/properties/search/radius', [App\Http\Controllers\Api\PropertyController::class, 'searchByRadius'])->name('api.properties.search.radius');
+    Route::get('/properties/search/area', [App\Http\Controllers\Api\PropertyController::class, 'searchByArea'])->name('api.properties.search.area');
+    Route::get('/properties/{property}/nearby', [App\Http\Controllers\Api\PropertyController::class, 'nearby'])->name('api.properties.nearby');
+    Route::get('/properties/geocode', [App\Http\Controllers\Api\PropertyController::class, 'geocode'])->name('api.properties.geocode');
+    Route::get('/properties/reverse-geocode', [App\Http\Controllers\Api\PropertyController::class, 'reverseGeocode'])->name('api.properties.reverse-geocode');
+    Route::get('/properties/statistics', [App\Http\Controllers\Api\PropertyController::class, 'statistics'])->name('api.properties.statistics');
+    Route::get('/properties/clusters', [App\Http\Controllers\Api\PropertyController::class, 'clusters'])->name('api.properties.clusters');
+    
+    // Advanced Search API Routes
+    Route::get('/search/advanced', [App\Http\Controllers\AdvancedSearchController::class, 'search'])->name('api.search.advanced');
+    Route::get('/search/suggestions', [App\Http\Controllers\AdvancedSearchController::class, 'suggestions'])->name('api.search.suggestions');
+    Route::get('/search/filters', [App\Http\Controllers\AdvancedSearchController::class, 'filters'])->name('api.search.filters');
+    Route::get('/search/analytics', [App\Http\Controllers\AdvancedSearchController::class, 'analytics'])->name('api.search.analytics');
+    Route::get('/search/recommendations', [App\Http\Controllers\AdvancedSearchController::class, 'recommendations'])->name('api.search.recommendations');
+    Route::get('/search/trends', [App\Http\Controllers\AdvancedSearchController::class, 'trends'])->name('api.search.trends');
+    Route::post('/search/save', [App\Http\Controllers\AdvancedSearchController::class, 'saveSearch'])->name('api.search.save');
+    Route::get('/search/saved', [App\Http\Controllers\AdvancedSearchController::class, 'savedSearches'])->name('api.search.saved');
+    Route::delete('/search/saved/{id}', [App\Http\Controllers\AdvancedSearchController::class, 'deleteSavedSearch'])->name('api.search.delete');
+    Route::post('/search/cache/clear', [App\Http\Controllers\AdvancedSearchController::class, 'clearCache'])->name('api.search.cache.clear');
 });
 
 require __DIR__.'/auth.php';

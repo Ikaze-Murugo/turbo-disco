@@ -45,14 +45,14 @@ class SecurityHeadersMiddleware
         // Permissions-Policy - Control browser features
         $response->headers->set('Permissions-Policy', $this->getPermissionsPolicyHeader());
 
-        // Cross-Origin-Embedder-Policy - Control cross-origin embedding
-        $response->headers->set('Cross-Origin-Embedder-Policy', 'require-corp');
+        // Cross-Origin-Embedder-Policy - Control cross-origin embedding (relaxed for maps)
+        $response->headers->set('Cross-Origin-Embedder-Policy', 'unsafe-none');
 
         // Cross-Origin-Opener-Policy - Control cross-origin window access
-        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
 
-        // Cross-Origin-Resource-Policy - Control cross-origin resource access
-        $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
+        // Cross-Origin-Resource-Policy - Control cross-origin resource access (allow external tiles)
+        $response->headers->set('Cross-Origin-Resource-Policy', 'cross-origin');
 
         // Cache-Control for sensitive pages
         if ($this->isSensitivePage($request)) {
@@ -73,11 +73,11 @@ class SecurityHeadersMiddleware
         $csp = [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
             "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com data:",
-            "img-src 'self' data: https: blob:",
+            "img-src 'self' data: https: blob: https://unpkg.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://api.mapbox.com https://*.mapbox.com https://stamen-tiles-*.a.ssl.fastly.net https://stamen-tiles.a.ssl.fastly.net",
             "media-src 'self' data: https: blob:",
-            "connect-src 'self'",
+            "connect-src 'self' https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://api.mapbox.com https://*.mapbox.com https://stamen-tiles-*.a.ssl.fastly.net",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",

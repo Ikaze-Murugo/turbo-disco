@@ -21,6 +21,14 @@ class SearchController extends Controller
     }
 
     /**
+     * Display property map.
+     */
+    public function map(Request $request)
+    {
+        return view('properties.map');
+    }
+
+    /**
      * Display map-based property search.
      */
     public function searchMap(Request $request)
@@ -29,6 +37,14 @@ class SearchController extends Controller
         $properties = $this->searchService->search($request, 50); // More properties for map view
 
         return view('properties.search-map', compact('properties'));
+    }
+
+    /**
+     * Display mobile-optimized property search.
+     */
+    public function mobileSearch(Request $request)
+    {
+        return view('properties.mobile-search');
     }
 
     /**

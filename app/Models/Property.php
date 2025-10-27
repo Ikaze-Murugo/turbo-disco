@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class Property extends Model
 {
@@ -45,6 +47,7 @@ class Property extends Model
         'view_count',
         'latitude',
         'longitude',
+        'coordinates',
         'address',
         'neighborhood',
         // Versioning fields
@@ -470,5 +473,258 @@ class Property extends Model
         $this->save();
 
         return $this;
+    }
+
+    // ========================================
+    // SPATIAL METHODS FOR MAPS INTEGRATION
+    // ========================================
+
+    /**
+     * Boot method to handle location_point updates
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($property) {
+            if ($property->isDirty('latitude') || $property->isDirty('longitude')) {
+                if ($property->latitude && $property->longitude) {
+                    // Check if PostGIS is available
+                    try {
+                        DB::statement("SELECT 1 FROM pg_extension WHERE extname = 'postgis'");
+                        // PostGIS available, use spatial column
+                        $property->location_point = DB::raw("ST_SetSRID(ST_MakePoint({$property->longitude}, {$property->latitude}), 4326)");
+                    } catch (\Exception $e) {
+                        // PostGIS not available, use JSON coordinates
+                        $property->coordinates = json_encode([
+                            'lat' => $property->latitude,
+                            'lng' => $property->longitude
+                        ]);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Scope for properties within a radius (fallback without PostGIS)
+     */
+    public function scopeWithinRadius($query, $latitude, $longitude, $radiusInKm)
+    {
+        // Fallback method using Haversine formula
+        $earthRadius = 6371; // Earth's radius in kilometers
+        
+        return $query->whereRaw("
+            (? * acos(cos(radians(?)) * cos(radians(latitude)) * 
+            cos(radians(longitude) - radians(?)) + 
+            sin(radians(?)) * sin(radians(latitude)))) <= ?
+        ", [$earthRadius, $latitude, $longitude, $latitude, $radiusInKm]);
+    }
+
+    /**
+     * Scope for properties within a bounding box (fallback without PostGIS)
+     */
+    public function scopeWithinBounds($query, $north, $south, $east, $west)
+    {
+        return $query->whereBetween('latitude', [$south, $north])
+                    ->whereBetween('longitude', [$west, $east]);
+    }
+
+    /**
+     * Scope for properties within a polygon (fallback without PostGIS)
+     */
+    public function scopeWithinPolygon($query, $polygonCoordinates)
+    {
+        // Simple bounding box fallback for polygon search
+        $lats = array_column($polygonCoordinates, 1);
+        $lngs = array_column($polygonCoordinates, 0);
+        
+        return $query->whereBetween('latitude', [min($lats), max($lats)])
+                    ->whereBetween('longitude', [min($lngs), max($lngs)]);
+    }
+
+    /**
+     * Scope for ordering by distance from a point (fallback without PostGIS)
+     */
+    public function scopeOrderByDistance($query, $latitude, $longitude)
+    {
+        $earthRadius = 6371; // Earth's radius in kilometers
+        
+        return $query->orderByRaw("
+            ? * acos(cos(radians(?)) * cos(radians(latitude)) * 
+            cos(radians(longitude) - radians(?)) + 
+            sin(radians(?)) * sin(radians(latitude)))
+        ", [$earthRadius, $latitude, $longitude, $latitude]);
+    }
+
+    /**
+     * Get distance from a specific point in kilometers (fallback without PostGIS)
+     */
+    public function getDistanceFrom($latitude, $longitude)
+    {
+        if (!$this->latitude || !$this->longitude) {
+            return null;
+        }
+
+        // Haversine formula
+        $earthRadius = 6371; // Earth's radius in kilometers
+        
+        $dLat = deg2rad($this->latitude - $latitude);
+        $dLng = deg2rad($this->longitude - $longitude);
+        
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+             cos(deg2rad($latitude)) * cos(deg2rad($this->latitude)) *
+             sin($dLng / 2) * sin($dLng / 2);
+        
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        
+        return round($earthRadius * $c, 2);
+    }
+
+    /**
+     * Check if property has valid coordinates
+     */
+    public function hasValidCoordinates()
+    {
+        return $this->latitude && $this->longitude && 
+               $this->latitude >= -2.9 && $this->latitude <= 0.0 && // Rwanda bounds
+               $this->longitude >= 28.8 && $this->longitude <= 30.9;
+    }
+
+    /**
+     * Get properties as GeoJSON format
+     */
+    public static function getAsGeoJSON($properties = null)
+    {
+        $properties = $properties ?: static::where('status', 'active')->get();
+
+        $features = $properties->map(function ($property) {
+            return [
+                'type' => 'Feature',
+                'properties' => [
+                    'id' => $property->id,
+                    'title' => $property->title,
+                    'price' => $property->price,
+                    'type' => $property->type,
+                    'bedrooms' => $property->bedrooms,
+                    'bathrooms' => $property->bathrooms,
+                    'area' => $property->area,
+                    'neighborhood' => $property->neighborhood,
+                    'location' => $property->location,
+                    'image' => $property->primaryImage?->url ?? null,
+                    'url' => route('properties.public.show', $property),
+                    'is_featured' => $property->is_featured,
+                    'furnishing_status' => $property->furnishing_status,
+                ],
+                'geometry' => [
+                    'type' => 'Point',
+                    'coordinates' => [$property->longitude, $property->latitude]
+                ]
+            ];
+        });
+
+        return [
+            'type' => 'FeatureCollection',
+            'features' => $features
+        ];
+    }
+
+    /**
+     * Geocode an address to get coordinates
+     */
+    public static function geocodeAddress($address)
+    {
+        $cacheKey = 'geocode_' . md5($address);
+        
+        return Cache::remember($cacheKey, 86400, function () use ($address) { // Cache for 24 hours
+            $url = 'https://nominatim.openstreetmap.org/search?' . http_build_query([
+                'q' => $address . ', Rwanda',
+                'format' => 'json',
+                'limit' => 1,
+                'addressdetails' => 1
+            ]);
+
+            $context = stream_context_create([
+                'http' => [
+                    'header' => "User-Agent: Murugo-Real-Estate/1.0\r\n"
+                ]
+            ]);
+
+            $response = file_get_contents($url, false, $context);
+            $data = json_decode($response, true);
+
+            if (!empty($data)) {
+                return [
+                    'latitude' => floatval($data[0]['lat']),
+                    'longitude' => floatval($data[0]['lon']),
+                    'address' => $data[0]['display_name']
+                ];
+            }
+
+            return null;
+        });
+    }
+
+    /**
+     * Reverse geocode coordinates to get address
+     */
+    public static function reverseGeocode($latitude, $longitude)
+    {
+        $cacheKey = 'reverse_geocode_' . md5($latitude . ',' . $longitude);
+        
+        return Cache::remember($cacheKey, 86400, function () use ($latitude, $longitude) {
+            $url = 'https://nominatim.openstreetmap.org/reverse?' . http_build_query([
+                'lat' => $latitude,
+                'lon' => $longitude,
+                'format' => 'json',
+                'addressdetails' => 1
+            ]);
+
+            $context = stream_context_create([
+                'http' => [
+                    'header' => "User-Agent: Murugo-Real-Estate/1.0\r\n"
+                ]
+            ]);
+
+            $response = file_get_contents($url, false, $context);
+            $data = json_decode($response, true);
+
+            if ($data && !isset($data['error'])) {
+                return [
+                    'address' => $data['display_name'],
+                    'neighborhood' => $data['address']['suburb'] ?? $data['address']['neighbourhood'] ?? null,
+                    'city' => $data['address']['city'] ?? $data['address']['town'] ?? null,
+                    'district' => $data['address']['county'] ?? null
+                ];
+            }
+
+            return null;
+        });
+    }
+
+    /**
+     * Get nearby properties within a radius
+     */
+    public function getNearbyProperties($radiusKm = 5, $limit = 10)
+    {
+        if (!$this->hasValidCoordinates()) {
+            return collect();
+        }
+
+        return static::where('id', '!=', $this->id)
+            ->where('status', 'active')
+            ->withinRadius($this->latitude, $this->longitude, $radiusKm)
+            ->orderByDistance($this->latitude, $this->longitude)
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Validate coordinates are within Rwanda bounds
+     */
+    public static function validateCoordinates($latitude, $longitude)
+    {
+        return $latitude >= -2.9 && $latitude <= 0.0 && 
+               $longitude >= 28.8 && $longitude <= 30.9;
     }
 }
