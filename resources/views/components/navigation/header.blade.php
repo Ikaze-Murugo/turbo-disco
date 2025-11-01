@@ -104,7 +104,7 @@
                     </div>
 
                     <!-- Main Navigation Links -->
-                    <div class="hidden space-x-6 lg:flex">
+                    <div class="hidden space-x-2 lg:flex">
                         <x-navigation.main-links />
                     </div>
                 </div>
