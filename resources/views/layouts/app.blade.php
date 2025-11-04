@@ -15,6 +15,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        {{-- NOTE: If running 'php artisan serve', you MUST also run 'npm run dev' in a separate terminal for styling to work. --}}
         
         <!-- Alpine.js for interactive components -->
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
