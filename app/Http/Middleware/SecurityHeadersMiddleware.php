@@ -72,16 +72,17 @@ class SecurityHeadersMiddleware
         // Development-friendly CSP that allows necessary resources
         $csp = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://chat.dadishimwe.com",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
             "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com data:",
             "img-src 'self' data: https: blob: https://unpkg.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://api.mapbox.com https://*.mapbox.com https://stamen-tiles-*.a.ssl.fastly.net https://stamen-tiles.a.ssl.fastly.net",
             "media-src 'self' data: https: blob:",
-            "connect-src 'self' https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://api.mapbox.com https://*.mapbox.com https://stamen-tiles-*.a.ssl.fastly.net",
+            "connect-src 'self' https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://api.mapbox.com https://*.mapbox.com https://stamen-tiles-*.a.ssl.fastly.net https://chat.dadishimwe.com wss://chat.dadishimwe.com",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",
-            "frame-ancestors 'none'"
+            "frame-ancestors 'none'",
+            "frame-src 'self' https://chat.dadishimwe.com"
         ];
 
         // Only add strict policies in production
