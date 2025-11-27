@@ -16,6 +16,13 @@ class Image extends Model
         'sort_order',
         'image_type',
         'image_order',
+        // ML fields
+        'image_hash',
+        'exif_data',
+        'image_size',
+        'image_width',
+        'image_height',
+        'mime_type',
     ];
 
     protected function casts(): array
@@ -23,6 +30,10 @@ class Image extends Model
         return [
             'is_primary' => 'boolean',
             'image_order' => 'integer',
+            'exif_data' => 'array',
+            'image_size' => 'integer',
+            'image_width' => 'integer',
+            'image_height' => 'integer',
         ];
     }
 

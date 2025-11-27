@@ -23,6 +23,9 @@ class User extends Authenticatable
         'profile_picture',
         'bio',
         'phone_number',
+        'phone_verified_at',
+        'phone_verification_code',
+        'phone_verification_code_expires_at',
         'date_of_birth',
         'gender',
         'location',
@@ -58,6 +61,8 @@ class User extends Authenticatable
             'last_active_at' => 'datetime',
             'admin_permissions' => 'array',
             'emergency_contact' => 'array',
+            'phone_verified_at' => 'datetime',
+            'phone_verification_code_expires_at' => 'datetime',
         ];
     }
 
@@ -113,6 +118,33 @@ class User extends Authenticatable
     public function searchHistories()
     {
         return $this->hasMany(SearchHistory::class);
+    }
+
+    // ML-related relationships
+    public function userEvents()
+    {
+        return $this->hasMany(UserEvent::class);
+    }
+
+    public function propertyEdits()
+    {
+        return $this->hasMany(PropertyEdit::class);
+    }
+
+    public function fraudScore()
+    {
+        return $this->morphOne(FraudScore::class, 'scoreable')->latest();
+    }
+
+    public function fraudScores()
+    {
+        return $this->morphMany(FraudScore::class, 'scoreable');
+    }
+
+    // Helper method to check if phone is verified
+    public function hasVerifiedPhone()
+    {
+        return !is_null($this->phone_verified_at);
     }
 
     public function savedSearches()

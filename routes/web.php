@@ -248,6 +248,15 @@ Route::middleware(['auth', 'verified', 'role:admin', 'rate_limit.admin'])->prefi
     Route::post('/admins/{user}/assign-role', [App\Http\Controllers\Admin\AdminManagementController::class, 'assignRole'])->name('admin.admins.assign-role');
     Route::delete('/admins/{user}/roles/{role}', [App\Http\Controllers\Admin\AdminManagementController::class, 'removeRole'])->name('admin.admins.remove-role');
     Route::get('/admins/workload', [App\Http\Controllers\Admin\AdminManagementController::class, 'workload'])->name('admin.admins.workload');
+    
+    // Fraud Detection Routes
+    Route::get('/fraud-detection', [App\Http\Controllers\Admin\FraudDetectionController::class, 'index'])->name('admin.fraud-detection.index');
+    Route::get('/fraud-detection/{id}', [App\Http\Controllers\Admin\FraudDetectionController::class, 'show'])->name('admin.fraud-detection.show');
+    Route::post('/fraud-detection/{id}/review', [App\Http\Controllers\Admin\FraudDetectionController::class, 'review'])->name('admin.fraud-detection.review');
+    Route::post('/fraud-detection/{id}/recalculate', [App\Http\Controllers\Admin\FraudDetectionController::class, 'recalculate'])->name('admin.fraud-detection.recalculate');
+    Route::post('/fraud-detection/run-users', [App\Http\Controllers\Admin\FraudDetectionController::class, 'runDetectionUsers'])->name('admin.fraud-detection.run-users');
+    Route::post('/fraud-detection/run-properties', [App\Http\Controllers\Admin\FraudDetectionController::class, 'runDetectionProperties'])->name('admin.fraud-detection.run-properties');
+    Route::get('/fraud-detection/export', [App\Http\Controllers\Admin\FraudDetectionController::class, 'export'])->name('admin.fraud-detection.export');
     Route::get('/admins/{admin}/performance', [App\Http\Controllers\Admin\AdminManagementController::class, 'performance'])->name('admin.admins.performance');
     
     // Ticket Assignment Routes

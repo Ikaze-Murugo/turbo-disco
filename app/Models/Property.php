@@ -200,6 +200,22 @@ class Property extends Model
         return $this->hasMany(Review::class)->where('is_approved', true);
     }
 
+    // ML-related relationships
+    public function propertyEdits()
+    {
+        return $this->hasMany(PropertyEdit::class);
+    }
+
+    public function fraudScore()
+    {
+        return $this->morphOne(FraudScore::class, 'scoreable')->latest();
+    }
+
+    public function fraudScores()
+    {
+        return $this->morphMany(FraudScore::class, 'scoreable');
+    }
+
     /**
      * Get average rating for this property
      */
