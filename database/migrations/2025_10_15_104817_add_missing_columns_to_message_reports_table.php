@@ -12,15 +12,37 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('message_reports', function (Blueprint $table) {
-            // Add missing columns
-            $table->string('conversation_id')->nullable()->after('message_id');
-            $table->unsignedBigInteger('sender_id')->nullable()->after('conversation_id');
-            $table->unsignedBigInteger('recipient_id')->nullable()->after('sender_id');
-            $table->text('message_content')->nullable()->after('recipient_id');
-            
-            // Add foreign key constraints
-            $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('recipient_id')->references('id')->on('users')->onDelete('cascade');
+            // Add missing columns only if they don't exist
+            if (!Schema::hasColumn('message_reports', 'conversation_id')) {
+                $table->string('conversation_id')->nullable()->after('message_id');
+            }
+            if (!Schema::hasColumn('message_reports', 'sender_id')) {
+                $table->unsignedBigInteger('sender_id')->nullable()->after('conversation_id');
+            }
+            if (!Schema::hasColumn('message_reports', 'recipient_id')) {
+                $table->unsignedBigInteger('recipient_id')->nullable()->after('sender_id');
+            }
+            if (!Schema::hasColumn('message_reports', 'message_content')) {
+                $table->text('message_content')->nullable()->after('recipient_id');
+            }
+        });
+        
+        // Add foreign key constraints separately (check if they don't exist)
+        Schema::table('message_reports', function (Blueprint $table) {
+            if (Schema::hasColumn('message_reports', 'sender_id')) {
+                try {
+                    $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
+                } catch (\Exception $e) {
+                    // Foreign key might already exist
+                }
+            }
+            if (Schema::hasColumn('message_reports', 'recipient_id')) {
+                try {
+                    $table->foreign('recipient_id')->references('id')->on('users')->onDelete('cascade');
+                } catch (\Exception $e) {
+                    // Foreign key might already exist
+                }
+            }
         });
     }
 

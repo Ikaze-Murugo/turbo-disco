@@ -13,26 +13,34 @@ return new class extends Migration
     public function up(): void
     {
         // Add coordinates column for maps integration (fallback without PostGIS)
-        Schema::table('properties', function (Blueprint $table) {
-            $table->json('coordinates')->nullable()->after('longitude');
-        });
+        if (!Schema::hasColumn('properties', 'coordinates')) {
+            Schema::table('properties', function (Blueprint $table) {
+                $table->json('coordinates')->nullable()->after('longitude');
+            });
+        }
         
         // Populate coordinates from existing latitude/longitude data
         DB::statement("
             UPDATE properties 
             SET coordinates = json_build_object('lat', latitude, 'lng', longitude) 
-            WHERE longitude IS NOT NULL AND latitude IS NOT NULL
+            WHERE longitude IS NOT NULL AND latitude IS NOT NULL AND coordinates IS NULL
         ");
         
-        // Create composite indexes for common filter combinations
-        DB::statement("CREATE INDEX properties_status_featured_idx ON properties (status, is_featured);");
-        DB::statement("CREATE INDEX properties_type_bedrooms_idx ON properties (type, bedrooms, bathrooms);");
-        DB::statement("CREATE INDEX properties_price_idx ON properties (price);");
-        DB::statement("CREATE INDEX properties_location_idx ON properties (location);");
-        DB::statement("CREATE INDEX properties_neighborhood_idx ON properties (neighborhood);");
+        // Create composite indexes for common filter combinations (with IF NOT EXISTS)
+        DB::statement("CREATE INDEX IF NOT EXISTS properties_status_featured_idx ON properties (status, is_featured);");
+        DB::statement("CREATE INDEX IF NOT EXISTS properties_type_bedrooms_idx ON properties (type, bedrooms, bathrooms);");
+        DB::statement("CREATE INDEX IF NOT EXISTS properties_price_idx ON properties (price);");
+        DB::statement("CREATE INDEX IF NOT EXISTS properties_location_idx ON properties (location);");
         
-        // Create index for featured properties with expiration
-        DB::statement("CREATE INDEX properties_featured_until_idx ON properties (is_featured, featured_until) WHERE is_featured = true;");
+        // Only create neighborhood index if column exists
+        if (Schema::hasColumn('properties', 'neighborhood')) {
+            DB::statement("CREATE INDEX IF NOT EXISTS properties_neighborhood_idx ON properties (neighborhood);");
+        }
+        
+        // Only create featured_until index if column exists
+        if (Schema::hasColumn('properties', 'is_featured') && Schema::hasColumn('properties', 'featured_until')) {
+            DB::statement("CREATE INDEX IF NOT EXISTS properties_featured_until_idx ON properties (is_featured, featured_until) WHERE is_featured = true;");
+        }
     }
 
     /**

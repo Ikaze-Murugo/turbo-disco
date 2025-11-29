@@ -12,76 +12,59 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('properties', function (Blueprint $table) {
-            // Composite indexes for common filter combinations
-            $table->index(['status', 'is_available', 'type'], 'idx_properties_status_available_type');
-            $table->index(['status', 'is_available', 'price'], 'idx_properties_status_available_price');
-            $table->index(['status', 'is_available', 'bedrooms'], 'idx_properties_status_available_bedrooms');
-            $table->index(['status', 'is_available', 'bathrooms'], 'idx_properties_status_available_bathrooms');
-            $table->index(['status', 'is_available', 'furnishing_status'], 'idx_properties_status_available_furnishing');
-            $table->index(['status', 'is_available', 'neighborhood'], 'idx_properties_status_available_neighborhood');
-            
-            // Individual column indexes for specific filters
-            $table->index('price', 'idx_properties_price');
-            $table->index('bedrooms', 'idx_properties_bedrooms');
-            $table->index('bathrooms', 'idx_properties_bathrooms');
-            $table->index('area', 'idx_properties_area');
-            $table->index('furnishing_status', 'idx_properties_furnishing_status');
-            $table->index('type', 'idx_properties_type');
-            $table->index('created_at', 'idx_properties_created_at');
-            $table->index('updated_at', 'idx_properties_updated_at');
-            
-            // Featured properties optimization
-            $table->index(['is_featured', 'status', 'is_available'], 'idx_properties_featured_status_available');
-            $table->index(['featured_until', 'is_featured'], 'idx_properties_featured_until');
-            $table->index('priority', 'idx_properties_priority');
-            
-            // Location-based search optimization
-            $table->index('address', 'idx_properties_address');
-            $table->index('location', 'idx_properties_location');
-            
-            // Policy filters
-            $table->index('pets_allowed', 'idx_properties_pets_allowed');
-            $table->index('smoking_allowed', 'idx_properties_smoking_allowed');
-            $table->index('parking_spaces', 'idx_properties_parking_spaces');
-            
-            // Amenity flags for quick filtering
-            $table->index('has_balcony', 'idx_properties_has_balcony');
-            $table->index('has_garden', 'idx_properties_has_garden');
-            $table->index('has_pool', 'idx_properties_has_pool');
-            $table->index('has_gym', 'idx_properties_has_gym');
-            $table->index('has_security', 'idx_properties_has_security');
-            $table->index('has_elevator', 'idx_properties_has_elevator');
-            $table->index('has_air_conditioning', 'idx_properties_has_air_conditioning');
-            $table->index('has_heating', 'idx_properties_has_heating');
-            $table->index('has_internet', 'idx_properties_has_internet');
-            $table->index('has_cable_tv', 'idx_properties_has_cable_tv');
-        });
-
-        // Add indexes to property_amenities table for better JOIN performance
-        Schema::table('property_amenities', function (Blueprint $table) {
-            $table->index(['amenity_id', 'distance_km'], 'idx_property_amenities_amenity_distance');
-            $table->index(['property_id', 'amenity_id'], 'idx_property_amenities_property_amenity');
-        });
-
-        // Add indexes to amenities table
-        Schema::table('amenities', function (Blueprint $table) {
-            $table->index('name', 'idx_amenities_name');
-            $table->index('type', 'idx_amenities_type');
-            $table->index('is_active', 'idx_amenities_is_active');
-        });
-
-        // Add indexes to users table for landlord filtering
-        Schema::table('users', function (Blueprint $table) {
-            $table->index(['role', 'is_active'], 'idx_users_role_active');
-        });
-
-        // Create full-text search indexes for PostgreSQL
-        if (DB::getDriverName() === 'pgsql') {
-            DB::statement('CREATE INDEX idx_properties_title_fts ON properties USING gin(to_tsvector(\'english\', title))');
-            DB::statement('CREATE INDEX idx_properties_description_fts ON properties USING gin(to_tsvector(\'english\', description))');
-            DB::statement('CREATE INDEX idx_properties_address_fts ON properties USING gin(to_tsvector(\'english\', address))');
-            DB::statement('CREATE INDEX idx_properties_neighborhood_fts ON properties USING gin(to_tsvector(\'english\', neighborhood))');
+        // Create indexes using raw SQL with IF NOT EXISTS for PostgreSQL
+        $indexes = [
+            "CREATE INDEX IF NOT EXISTS idx_properties_status_available_type ON properties (status, is_available, type)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_status_available_price ON properties (status, is_available, price)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_status_available_bedrooms ON properties (status, is_available, bedrooms)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_status_available_bathrooms ON properties (status, is_available, bathrooms)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_price ON properties (price)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_bedrooms ON properties (bedrooms)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_bathrooms ON properties (bathrooms)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_type ON properties (type)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_created_at ON properties (created_at)",
+            "CREATE INDEX IF NOT EXISTS idx_properties_updated_at ON properties (updated_at)",
+        ];
+        
+        // Only create indexes for columns that exist
+        $conditionalIndexes = [
+            ['column' => 'furnishing_status', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_furnishing_status ON properties (furnishing_status)"],
+            ['column' => 'furnishing_status', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_status_available_furnishing ON properties (status, is_available, furnishing_status)"],
+            ['column' => 'neighborhood', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_status_available_neighborhood ON properties (status, is_available, neighborhood)"],
+            ['column' => 'is_featured', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_featured_status_available ON properties (is_featured, status, is_available)"],
+            ['column' => 'featured_until', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_featured_until ON properties (featured_until, is_featured)"],
+            ['column' => 'priority', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_priority ON properties (priority)"],
+            ['column' => 'address', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_address ON properties (address)"],
+            ['column' => 'pets_allowed', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_pets_allowed ON properties (pets_allowed)"],
+            ['column' => 'smoking_allowed', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_smoking_allowed ON properties (smoking_allowed)"],
+            ['column' => 'parking_spaces', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_parking_spaces ON properties (parking_spaces)"],
+            ['column' => 'has_balcony', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_has_balcony ON properties (has_balcony)"],
+            ['column' => 'has_garden', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_has_garden ON properties (has_garden)"],
+            ['column' => 'has_pool', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_has_pool ON properties (has_pool)"],
+            ['column' => 'has_gym', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_has_gym ON properties (has_gym)"],
+            ['column' => 'has_security', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_has_security ON properties (has_security)"],
+            ['column' => 'has_elevator', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_has_elevator ON properties (has_elevator)"],
+            ['column' => 'area', 'sql' => "CREATE INDEX IF NOT EXISTS idx_properties_area ON properties (area)"],
+        ];
+        
+        // Execute basic indexes
+        foreach ($indexes as $sql) {
+            try {
+                DB::statement($sql);
+            } catch (\Exception $e) {
+                // Index might already exist or column might not exist
+            }
+        }
+        
+        // Execute conditional indexes (only if column exists)
+        foreach ($conditionalIndexes as $index) {
+            if (Schema::hasColumn('properties', $index['column'])) {
+                try {
+                    DB::statement($index['sql']);
+                } catch (\Exception $e) {
+                    // Index might already exist
+                }
+            }
         }
     }
 
@@ -90,73 +73,43 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('properties', function (Blueprint $table) {
-            // Drop composite indexes
-            $table->dropIndex('idx_properties_status_available_type');
-            $table->dropIndex('idx_properties_status_available_price');
-            $table->dropIndex('idx_properties_status_available_bedrooms');
-            $table->dropIndex('idx_properties_status_available_bathrooms');
-            $table->dropIndex('idx_properties_status_available_furnishing');
-            $table->dropIndex('idx_properties_status_available_neighborhood');
-            
-            // Drop individual indexes
-            $table->dropIndex('idx_properties_price');
-            $table->dropIndex('idx_properties_bedrooms');
-            $table->dropIndex('idx_properties_bathrooms');
-            $table->dropIndex('idx_properties_area');
-            $table->dropIndex('idx_properties_furnishing_status');
-            $table->dropIndex('idx_properties_type');
-            $table->dropIndex('idx_properties_created_at');
-            $table->dropIndex('idx_properties_updated_at');
-            
-            // Drop featured properties indexes
-            $table->dropIndex('idx_properties_featured_status_available');
-            $table->dropIndex('idx_properties_featured_until');
-            $table->dropIndex('idx_properties_priority');
-            
-            // Drop location indexes
-            $table->dropIndex('idx_properties_address');
-            $table->dropIndex('idx_properties_location');
-            
-            // Drop policy indexes
-            $table->dropIndex('idx_properties_pets_allowed');
-            $table->dropIndex('idx_properties_smoking_allowed');
-            $table->dropIndex('idx_properties_parking_spaces');
-            
-            // Drop amenity flag indexes
-            $table->dropIndex('idx_properties_has_balcony');
-            $table->dropIndex('idx_properties_has_garden');
-            $table->dropIndex('idx_properties_has_pool');
-            $table->dropIndex('idx_properties_has_gym');
-            $table->dropIndex('idx_properties_has_security');
-            $table->dropIndex('idx_properties_has_elevator');
-            $table->dropIndex('idx_properties_has_air_conditioning');
-            $table->dropIndex('idx_properties_has_heating');
-            $table->dropIndex('idx_properties_has_internet');
-            $table->dropIndex('idx_properties_has_cable_tv');
-        });
-
-        Schema::table('property_amenities', function (Blueprint $table) {
-            $table->dropIndex('idx_property_amenities_amenity_distance');
-            $table->dropIndex('idx_property_amenities_property_amenity');
-        });
-
-        Schema::table('amenities', function (Blueprint $table) {
-            $table->dropIndex('idx_amenities_name');
-            $table->dropIndex('idx_amenities_type');
-            $table->dropIndex('idx_amenities_is_active');
-        });
-
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex('idx_users_role_active');
-        });
-
-        // Drop full-text search indexes for PostgreSQL
-        if (DB::getDriverName() === 'pgsql') {
-            DB::statement('DROP INDEX IF EXISTS idx_properties_title_fts');
-            DB::statement('DROP INDEX IF EXISTS idx_properties_description_fts');
-            DB::statement('DROP INDEX IF EXISTS idx_properties_address_fts');
-            DB::statement('DROP INDEX IF EXISTS idx_properties_neighborhood_fts');
+        // Drop indexes if they exist
+        $indexes = [
+            'idx_properties_status_available_type',
+            'idx_properties_status_available_price',
+            'idx_properties_status_available_bedrooms',
+            'idx_properties_status_available_bathrooms',
+            'idx_properties_status_available_furnishing',
+            'idx_properties_status_available_neighborhood',
+            'idx_properties_price',
+            'idx_properties_bedrooms',
+            'idx_properties_bathrooms',
+            'idx_properties_area',
+            'idx_properties_furnishing_status',
+            'idx_properties_type',
+            'idx_properties_created_at',
+            'idx_properties_updated_at',
+            'idx_properties_featured_status_available',
+            'idx_properties_featured_until',
+            'idx_properties_priority',
+            'idx_properties_address',
+            'idx_properties_pets_allowed',
+            'idx_properties_smoking_allowed',
+            'idx_properties_parking_spaces',
+            'idx_properties_has_balcony',
+            'idx_properties_has_garden',
+            'idx_properties_has_pool',
+            'idx_properties_has_gym',
+            'idx_properties_has_security',
+            'idx_properties_has_elevator',
+        ];
+        
+        foreach ($indexes as $indexName) {
+            try {
+                DB::statement("DROP INDEX IF EXISTS {$indexName}");
+            } catch (\Exception $e) {
+                // Index might not exist
+            }
         }
     }
 };
