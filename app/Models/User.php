@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
         'name',
@@ -40,6 +42,13 @@ class User extends Authenticatable
         'admin_level',
         'admin_permissions',
         'emergency_contact',
+        // Notification preferences
+        'email_notifications',
+        'push_notifications',
+        'notify_property_updates',
+        'notify_messages',
+        'notify_reviews',
+        'marketing_emails',
     ];
 
     protected $hidden = [
@@ -63,6 +72,12 @@ class User extends Authenticatable
             'emergency_contact' => 'array',
             'phone_verified_at' => 'datetime',
             'phone_verification_code_expires_at' => 'datetime',
+            'email_notifications' => 'boolean',
+            'push_notifications' => 'boolean',
+            'notify_property_updates' => 'boolean',
+            'notify_messages' => 'boolean',
+            'notify_reviews' => 'boolean',
+            'marketing_emails' => 'boolean',
         ];
     }
 
@@ -129,6 +144,11 @@ class User extends Authenticatable
     public function propertyEdits()
     {
         return $this->hasMany(PropertyEdit::class);
+    }
+
+    public function pushNotificationTokens()
+    {
+        return $this->hasMany(PushNotificationToken::class);
     }
 
     public function fraudScore()
