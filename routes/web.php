@@ -87,7 +87,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])
         ->middleware('rate_limit.password_reset')
         ->name('password.email');
-    Route::get('/reset-password/{token}/{email}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::get('/reset-password/{token}/{email}', [PasswordResetController::class, 'showResetForm'])->name('password.reset.custom');
     Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 });
 
