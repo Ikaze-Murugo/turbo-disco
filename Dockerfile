@@ -18,11 +18,12 @@ RUN apk add --no-cache \
     libzip-dev \
     freetype-dev \
     libjpeg-turbo-dev \
-    bash
+    bash \
+    postgresql-dev 
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_sqlite pdo_mysql mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install pdo_sqlite pdo_mysql mbstring exif pcntl bcmath gd zip pdo_pgsql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
