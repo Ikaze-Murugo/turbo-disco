@@ -10,7 +10,11 @@ chmod -R 775 /var/www/storage /var/www/bootstrap/cache /var/www/database
 rm -f /var/www/storage/logs/*.log
 
 echo "Waiting for database to be ready..."
-sleep 2
+until nc -z postgres 5432; do
+  echo "Postgres not ready, waiting..."
+  sleep 1
+done
+
 
 echo "Running database migrations..."
 php artisan migrate --force --no-interaction
