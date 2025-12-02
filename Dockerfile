@@ -25,6 +25,9 @@ RUN apk add --no-cache \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_sqlite pdo_mysql mbstring exif pcntl bcmath gd zip pdo_pgsql
 
+# Configure PHP-FPM to listen on a Unix socket for Nginx
+RUN echo "[www]\nlisten = /var/run/php-fpm.sock" > /usr/local/etc/php-fpm.d/www.conf
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
