@@ -19,7 +19,8 @@ RUN apk add --no-cache \
     freetype-dev \
     libjpeg-turbo-dev \
     bash \
-    postgresql-dev 
+    postgresql-dev \
+    netcat-openbsd
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
