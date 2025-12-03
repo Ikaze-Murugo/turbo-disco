@@ -27,7 +27,24 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_sqlite pdo_mysql mbstring exif pcntl bcmath gd zip pdo_pgsql
 
 # Configure PHP-FPM to listen on a Unix socket for Nginx
-RUN echo "[www]\nlisten = /var/run/php-fpm.sock" > /usr/local/etc/php-fpm.d/www.conf
+RUN mkdir -p /usr/local/etc/php-fpm.d && cat > /usr/local/etc/php-fpm.d/www.conf << 'EOF'
+[www]
+listen = /var/run/php-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+listen.mode = 0666
+
+user = www-data
+group = www-data
+
+pm = dynamic
+pm.max_children = 20
+pm.start_servers = 5
+pm.min_spare_servers = 2
+pm.max_spare_servers = 10
+
+catch_workers_output = yes
+EOF
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
