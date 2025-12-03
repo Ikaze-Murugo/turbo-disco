@@ -97,13 +97,16 @@ RUN echo 'APP_NAME="Murugo Real Estate"' > .env && \
     echo '' >> .env && \
     echo 'MAIL_MAILER=log' >> .env
 
+# Build frontend assets BEFORE changing permissions
+RUN npm run build
+
 # Set permissions
 RUN touch database/database.sqlite && \
     chown -R www-data:www-data /var/www && \
-    chmod -R 775 storage bootstrap/cache database
+    chmod -R 775 storage bootstrap/cache database public/build
 
-# Build frontend assets, then remove node_modules to save space
-RUN npm run build && rm -rf node_modules
+# Remove node_modules to save space
+RUN rm -rf node_modules
 
 # Optimize autoloader
 RUN composer dump-autoload --optimize
