@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 class Property extends Model
 {
@@ -505,17 +506,22 @@ class Property extends Model
         static::saving(function ($property) {
             if ($property->isDirty('latitude') || $property->isDirty('longitude')) {
                 if ($property->latitude && $property->longitude) {
-                    // Check if PostGIS is available
+                    // Always use JSON coordinates as fallback
+                    // PostGIS is optional and may not be installed
+                    $property->coordinates = json_encode([
+                        'lat' => $property->latitude,
+                        'lng' => $property->longitude
+                    ]);
+                    
+                    // Try to use PostGIS if available and column exists
                     try {
-                        DB::statement("SELECT 1 FROM pg_extension WHERE extname = 'postgis'");
-                        // PostGIS available, use spatial column
-                        $property->location_point = DB::raw("ST_SetSRID(ST_MakePoint({$property->longitude}, {$property->latitude}), 4326)");
+                        if (Schema::hasColumn('properties', 'location_point')) {
+                            DB::statement("SELECT 1 FROM pg_extension WHERE extname = 'postgis'");
+                            // PostGIS available, use spatial column
+                            $property->location_point = DB::raw("ST_SetSRID(ST_MakePoint({$property->longitude}, {$property->latitude}), 4326)");
+                        }
                     } catch (\Exception $e) {
-                        // PostGIS not available, use JSON coordinates
-                        $property->coordinates = json_encode([
-                            'lat' => $property->latitude,
-                            'lng' => $property->longitude
-                        ]);
+                        // PostGIS not available or column doesn't exist, continue with JSON coordinates
                     }
                 }
             }
